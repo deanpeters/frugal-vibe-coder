@@ -114,7 +114,32 @@ Each concept doc explains one idea in plain language — what it is, why it matt
 
 ## Install Scripts
 
-Scripts detect your package manager (Homebrew, apt, Chocolatey) and use it when available. Before installing anything, they check whether you already have it and give you a choice: use what's there, update, or install fresh. Nothing is overwritten without asking.
+### Start here
+
+**macOS / Linux:**
+```bash
+./scripts/setup.sh
+```
+
+**Windows** (PowerShell, run as Administrator):
+```powershell
+.\scripts\setup.ps1
+```
+
+Both scripts walk you through the full setup in order — package manager, Ollama, then whichever learning surfaces you choose. Nothing is installed without your confirmation.
+
+### Install tools individually
+
+```bash
+./scripts/install-ollama.sh      # Ollama + default model
+./scripts/install-dyad.sh        # Dyad — no-code surface
+./scripts/install-opencode.sh    # OpenCode — CLI surface
+./scripts/install-vscode.sh      # VS Code + Continue — IDE surface
+```
+
+Each script checks what you already have, explains every step, and records the result in `docs/reference/my-setup.md`.
+
+Scripts detect your package manager (Homebrew, apt, Chocolatey) and use it when available. Nothing is overwritten without asking.
 
 ---
 

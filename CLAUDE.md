@@ -6,18 +6,42 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 **frugal-vibe-coder** is a learning platform for AI-assisted product building. Budget-consciousness is a core design constraint, not the whole point. The primary audience is PMs and designers with little to no coding experience. There is no build pipeline, test suite, or linter. The "product" is the docs, scripts, and learning materials.
 
-## Available Scripts
+## Scripts
 
-The only executable script currently in the repo:
+### Entry points
 
 ```bash
-./install-dyad-ollama-mac.sh   # Bootstrap Dyad + Ollama on macOS (arm64 or x86_64)
+./scripts/setup.sh       # Full guided setup — macOS and Linux
+./scripts/setup.ps1      # Full guided setup — Windows (run in PowerShell as Administrator)
 ```
 
-The README references future scripts (not yet present):
-- `./scripts/install-dyad.sh --light`
-- `./scripts/install-cli.sh`
-- `./scripts/setup-vscode.sh`
+### Individual installers (macOS and Linux)
+
+```bash
+./scripts/install-ollama.sh      # Install Ollama and pull the default model
+./scripts/install-dyad.sh        # Install Dyad (no-code surface)
+./scripts/install-opencode.sh    # Install OpenCode (CLI surface)
+./scripts/install-vscode.sh      # Install VS Code + Continue extension (IDE surface)
+```
+
+Each installer: checks current state → offers use/update/install → explains every step → writes to `docs/reference/my-setup.md`.
+
+### Shared library (`scripts/lib/`)
+
+| File | Responsibility |
+|------|---------------|
+| `ui.sh` | Colors, print helpers, yes/no prompts, numbered choices |
+| `platform.sh` | OS detection (macos/debian), arch detection, platform guard |
+| `packages.sh` | Detect brew/apt, `pkg_install`, `pkg_upgrade`, `apt_update_if_needed` |
+| `check.sh` | `get_tool_version`, `is_installed`, `ollama_model_exists` |
+| `config.sh` | Load `frugal-vibe.conf` + local overrides, `check_api_key` with clear error messages |
+| `state.sh` | Init and write `docs/reference/my-setup.md`, `record_install` |
+
+### Configuration
+
+`frugal-vibe.conf` in the repo root controls `MODEL_PROVIDER`, `LOCAL_MODEL`, and `PAID_MODEL`. It is committed and contains no secrets. Personal overrides go in `frugal-vibe.conf.local` (gitignored).
+
+The legacy `install-dyad-ollama-mac.sh` in the repo root predates this structure and remains for reference only. Use `scripts/setup.sh` instead.
 
 ## Architecture: Three Learning Surfaces
 
