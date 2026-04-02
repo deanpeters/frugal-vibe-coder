@@ -197,16 +197,20 @@ Each concept doc explains one idea in plain language — what it is, why it matt
 **macOS / Linux:**
 ```bash
 ./scripts/setup.sh
+./scripts/setup.sh --force-all
 ```
 
 **Windows** (PowerShell, run as Administrator):
 ```powershell
 .\scripts\setup.ps1
+.\scripts\setup.ps1 -ForceAll
 ```
 
 Both scripts walk you through the full setup in order — package manager, Ollama, then whichever learning surfaces you choose. Nothing is installed without your confirmation. If a script needs to replace an existing tool config, it asks first and creates a backup before changing anything.
 
 The guided setup scripts also keep a local checkpoint in `docs/reference/setup-progress.env`. If setup gets interrupted, rerunning the script resumes from the next unfinished step instead of making you start from the top mentally.
+
+If you want to deliberately retest the entire guided flow from Step 1, use `--force-all` on macOS/Linux or `-ForceAll` on Windows. That ignores the saved checkpoint and revisits all four setup steps, while still asking before any change is made.
 
 ### Install tools individually
 

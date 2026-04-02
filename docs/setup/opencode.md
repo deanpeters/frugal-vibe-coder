@@ -96,20 +96,32 @@ What this does: downloads the official install script from opencode.ai and runs 
 
 If you use `./scripts/install-opencode.sh`, this configuration step can be done for you. If you already have an OpenCode config, the script asks before replacing it and backs it up first.
 
-OpenCode needs to know which model to use. Run:
+OpenCode needs a valid config file that points to your local Ollama server.
 
-```bash
-opencode config
+Create or update `~/.config/opencode/config.json` with:
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "ollama": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Ollama (local)",
+      "options": {
+        "baseURL": "http://localhost:11434/v1"
+      },
+      "models": {
+        "qwen3:8b": {
+          "name": "qwen3:8b (local)"
+        }
+      }
+    }
+  },
+  "model": "ollama/qwen3:8b"
+}
 ```
 
-In the configuration prompt:
-- Set the provider to **ollama**
-- Set the model to **qwen3:8b**
-- Leave other settings at their defaults for now
-
-Save and exit.
-
-This tells OpenCode to route all requests to your local Ollama instance instead of a cloud service.
+This tells OpenCode to route requests to your local Ollama instance instead of a cloud service, and it sets `qwen3:8b` as the default model.
 
 ---
 

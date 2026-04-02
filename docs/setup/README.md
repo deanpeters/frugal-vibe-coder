@@ -15,11 +15,13 @@ From the repo root:
 **macOS / Linux**
 ```bash
 ./scripts/setup.sh
+./scripts/setup.sh --force-all
 ```
 
 **Windows** (PowerShell as Administrator)
 ```powershell
 .\scripts\setup.ps1
+.\scripts\setup.ps1 -ForceAll
 ```
 
 Those scripts:
@@ -28,6 +30,8 @@ Those scripts:
 - verify manual installs before continuing
 - back up an existing config before replacing it
 - update `docs/reference/my-setup.md` so you can see what changed
+
+Use the force-all option when you want to retest the whole guided flow from the beginning instead of resuming from the saved checkpoint.
 
 Use the rest of this section if you prefer tool-by-tool guides or want to understand each install manually.
 

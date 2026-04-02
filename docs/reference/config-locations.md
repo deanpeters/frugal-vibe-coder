@@ -65,7 +65,30 @@ OpenCode stores its configuration in a dedicated folder in your home directory.
 | Windows | `%APPDATA%\opencode\` |
 | Linux | `~/.config/opencode/` |
 
-The main config file is typically `config.json` or `config.toml` inside that folder. Run `opencode config` to edit settings through the interactive interface rather than editing the file directly.
+The main config file is typically `config.json` inside that folder. If you need to change providers or models manually, edit that file directly and keep a backup of your previous version first.
+
+If you configure OpenCode for Ollama manually, the provider must be an object and the model should use the `provider/model` format. A working example looks like this:
+
+```json
+{
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "ollama": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Ollama (local)",
+      "options": {
+        "baseURL": "http://localhost:11434/v1"
+      },
+      "models": {
+        "qwen3:8b": {
+          "name": "qwen3:8b (local)"
+        }
+      }
+    }
+  },
+  "model": "ollama/qwen3:8b"
+}
+```
 
 ---
 

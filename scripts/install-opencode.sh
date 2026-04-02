@@ -184,8 +184,22 @@ if [ -f "$OPENCODE_CONFIG" ]; then
             backup_file_if_exists "$OPENCODE_CONFIG" "OpenCode config"
             cat > "$OPENCODE_CONFIG" << EOF
 {
-  "provider": "ollama",
-  "model": "${LOCAL_MODEL}"
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "ollama": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Ollama (local)",
+      "options": {
+        "baseURL": "http://localhost:11434/v1"
+      },
+      "models": {
+        "${LOCAL_MODEL}": {
+          "name": "${LOCAL_MODEL} (local)"
+        }
+      }
+    }
+  },
+  "model": "ollama/${LOCAL_MODEL}"
 }
 EOF
             print_success "Config updated."
@@ -197,8 +211,22 @@ else
     mkdir -p "$OPENCODE_CONFIG_DIR"
     cat > "$OPENCODE_CONFIG" << EOF
 {
-  "provider": "ollama",
-  "model": "${LOCAL_MODEL}"
+  "$schema": "https://opencode.ai/config.json",
+  "provider": {
+    "ollama": {
+      "npm": "@ai-sdk/openai-compatible",
+      "name": "Ollama (local)",
+      "options": {
+        "baseURL": "http://localhost:11434/v1"
+      },
+      "models": {
+        "${LOCAL_MODEL}": {
+          "name": "${LOCAL_MODEL} (local)"
+        }
+      }
+    }
+  },
+  "model": "ollama/${LOCAL_MODEL}"
 }
 EOF
     print_success "Config created at $OPENCODE_CONFIG"

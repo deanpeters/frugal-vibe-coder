@@ -3,6 +3,7 @@
 #
 # Usage (run in PowerShell as Administrator):
 #   .\scripts\setup.ps1
+#   .\scripts\setup.ps1 -ForceAll
 #
 # This script walks you through installing everything in the recommended order:
 #   1. Chocolatey package manager (if not already present)
@@ -10,6 +11,10 @@
 #   3. Your chosen learning surface(s): Dyad, OpenCode, VS Code
 #
 # Mac/Linux users: use scripts/setup.sh instead.
+
+param(
+    [switch]$ForceAll
+)
 
 # ---------------------------------------------------------------------------
 # Require Administrator privileges
@@ -367,14 +372,27 @@ if ($global:MODEL_PROVIDER -eq "ollama") {
     Print-Info "  Model:    $global:PAID_MODEL  (paid - requires API key)"
 }
 Write-Host ""
-Print-SetupResumeMessage
+
+if ($ForceAll) {
+    Clear-SetupProgress
+    Print-Info "Force-all mode is on."
+    Print-Info "We'll revisit all four setup steps from the top for testing."
+    Print-Info "You will still be asked before anything changes."
+    Write-Host ""
+} else {
+    Print-SetupResumeMessage
+}
 
 Press-EnterToContinue
 
 # ---------------------------------------------------------------------------
 # Step 1 — Chocolatey
 # ---------------------------------------------------------------------------
-$nextStep = Get-SetupNextStep
+if ($ForceAll) {
+    $nextStep = "package_manager"
+} else {
+    $nextStep = Get-SetupNextStep
+}
 
 if ($nextStep -eq "package_manager") {
     Mark-SetupStepStarted "package_manager"
@@ -633,18 +651,46 @@ if ($nextStep -eq "opencode") {
                 if ($choice -eq 2) {
                     Backup-FileIfExists $opencodeConfigPath "OpenCode config"
                     $opencodeConfig = @{
-                        provider = "ollama"
-                        model = $global:LOCAL_MODEL
-                    } | ConvertTo-Json
+                        '$schema' = "https://opencode.ai/config.json"
+                        provider = @{
+                            ollama = @{
+                                npm = "@ai-sdk/openai-compatible"
+                                name = "Ollama (local)"
+                                options = @{
+                                    baseURL = "http://localhost:11434/v1"
+                                }
+                                models = @{
+                                    $global:LOCAL_MODEL = @{
+                                        name = "$($global:LOCAL_MODEL) (local)"
+                                    }
+                                }
+                            }
+                        }
+                        model = "ollama/$($global:LOCAL_MODEL)"
+                    } | ConvertTo-Json -Depth 6
                     Set-Content -Path $opencodeConfigPath -Value $opencodeConfig
                     Print-Success "OpenCode configured to use $global:LOCAL_MODEL via Ollama."
                     $opencodeConfigStatus = "OpenCode is configured to use $global:LOCAL_MODEL via Ollama."
                 }
             } else {
                 $opencodeConfig = @{
-                    provider = "ollama"
-                    model = $global:LOCAL_MODEL
-                } | ConvertTo-Json
+                    '$schema' = "https://opencode.ai/config.json"
+                    provider = @{
+                        ollama = @{
+                            npm = "@ai-sdk/openai-compatible"
+                            name = "Ollama (local)"
+                            options = @{
+                                baseURL = "http://localhost:11434/v1"
+                            }
+                            models = @{
+                                $global:LOCAL_MODEL = @{
+                                    name = "$($global:LOCAL_MODEL) (local)"
+                                }
+                            }
+                        }
+                    }
+                    model = "ollama/$($global:LOCAL_MODEL)"
+                } | ConvertTo-Json -Depth 6
                 Set-Content -Path $opencodeConfigPath -Value $opencodeConfig
                 Print-Success "OpenCode configured to use $global:LOCAL_MODEL via Ollama."
                 $opencodeConfigStatus = "OpenCode is configured to use $global:LOCAL_MODEL via Ollama."

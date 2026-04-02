@@ -4,6 +4,7 @@
 #
 # Usage:
 #   ./scripts/setup.sh
+#   ./scripts/setup.sh --force-all
 #
 # This script walks you through installing everything in the recommended order:
 #   1. Package manager (if not already present)
@@ -25,6 +26,33 @@ source "$SCRIPT_DIR/lib/check.sh"
 source "$SCRIPT_DIR/lib/config.sh"
 source "$SCRIPT_DIR/lib/state.sh"
 
+FORCE_ALL=false
+
+while [ $# -gt 0 ]; do
+    case "$1" in
+        --force-all)
+            FORCE_ALL=true
+            ;;
+        -h|--help)
+            cat << EOF
+Usage:
+  ./scripts/setup.sh
+  ./scripts/setup.sh --force-all
+
+Options:
+  --force-all   Restart the guided setup from Step 1 and revisit all four steps.
+  -h, --help    Show this help message.
+EOF
+            exit 0
+            ;;
+        *)
+            echo "Unknown option: $1" >&2
+            exit 1
+            ;;
+    esac
+    shift
+done
+
 load_config
 
 # ---------------------------------------------------------------------------
@@ -45,7 +73,16 @@ print_blank
 print_info "To change your model or provider, edit frugal-vibe.conf in this repo,"
 print_info "then run this script again."
 print_blank
-print_setup_resume_message
+
+if [ "$FORCE_ALL" = true ]; then
+    clear_setup_progress
+    print_info "Force-all mode is on."
+    print_info "We'll revisit all four setup steps from the top for testing."
+    print_info "You will still be asked before anything changes."
+    print_blank
+else
+    print_setup_resume_message
+fi
 
 press_enter_to_continue
 
@@ -54,7 +91,11 @@ press_enter_to_continue
 # ---------------------------------------------------------------------------
 require_supported_platform
 OS=$(detect_os)
-NEXT_STEP=$(get_setup_next_step)
+if [ "$FORCE_ALL" = true ]; then
+    NEXT_STEP="package_manager"
+else
+    NEXT_STEP=$(get_setup_next_step)
+fi
 
 # ---------------------------------------------------------------------------
 # Step 1 — Package manager
