@@ -37,6 +37,30 @@ This repo is built for you.
 
 ---
 
+## Early Testers Wanted
+
+This project is still in an early stage, and I am actively looking for people to help test it on real machines and real learner setups.
+
+The most helpful testing right now is:
+
+- running the current setup scripts on macOS, Windows, and Linux
+- checking whether the supported tools install and connect cleanly
+- noting where the docs feel clear, confusing, incomplete, or too technical
+- pointing out what would make this more useful as a learning tool
+
+I am especially interested in feedback on what else this repo should provide in order to be genuinely helpful for learners, including:
+
+- better documentation
+- more examples
+- clearer step-by-step instruction
+- troubleshooting help
+- starter exercises or sample projects
+- other forms of learner support and guidance
+
+If you test this repo and something is confusing, fragile, or missing, that feedback is valuable. The goal is to make this work well for more people on more platforms, not just on one machine with one level of technical confidence.
+
+---
+
 ## Quick Start
 
 If you're on a Mac and you want the simplest path, do this:
@@ -242,7 +266,16 @@ The current three surfaces (no-code, CLI, IDE) are the foundation. The full expa
 | 5 | Prompts and templates — PM-oriented, copy-paste ready |
 | 6 | Future surfaces — n8n, Flowise, OpenClaw, OpenHands, SWE-agent |
 
-None of the phase 6 surfaces are available yet. They will be introduced only when they can be done in a way that fits the learning platform principles of this repo.
+The repo is also considering broader support over time for other tools that fit the same access-first philosophy:
+
+- no-code / low-code: `bolt.diy`
+- CLI: `Goose`
+- IDE / editor: `VSCodium`
+- future visual agent-flow builders: `n8n`, `Flowise`
+- future autonomous agent platforms: `OpenClaw`, `OpenHands`
+- future coding agent frameworks: `SWE-agent`
+
+These are not all active or documented yet. They will be introduced only when they can be done in a way that fits the learning platform principles of this repo: low-cost, local-first where practical, beginner-respectful, and realistic on ordinary hardware.
 
 ---
 
