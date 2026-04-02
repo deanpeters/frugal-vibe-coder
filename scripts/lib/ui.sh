@@ -64,6 +64,74 @@ print_divider() {
 }
 
 # ---------------------------------------------------------------------------
+# Long-running command helpers
+# ---------------------------------------------------------------------------
+
+# Print a reassuring status message every few seconds while a command runs.
+start_status_heartbeat() {
+    local label="$1"
+    local interval="${2:-8}"
+
+    (
+        local tick=0
+
+        while true; do
+            sleep "$interval"
+
+            case $((tick % 4)) in
+                0)
+                    print_info "${label} is still working..."
+                    ;;
+                1)
+                    print_info "${label} can take a few minutes on some machines."
+                    ;;
+                2)
+                    print_info "If you do not see new output yet, that's okay — the script is still running."
+                    ;;
+                3)
+                    print_info "${label} is still in progress..."
+                    ;;
+            esac
+
+            tick=$((tick + 1))
+        done
+    ) &
+
+    STATUS_HEARTBEAT_PID=$!
+}
+
+# Stop the background status heartbeat.
+stop_status_heartbeat() {
+    local pid="${1:-${STATUS_HEARTBEAT_PID:-}}"
+
+    if [ -n "${pid:-}" ]; then
+        kill "$pid" 2>/dev/null || true
+        wait "$pid" 2>/dev/null || true
+    fi
+
+    STATUS_HEARTBEAT_PID=""
+}
+
+# Run a command in the foreground while printing periodic reassurance.
+run_with_status() {
+    local label="$1"
+    shift
+
+    local exit_code
+
+    start_status_heartbeat "$label"
+
+    set +e
+    "$@"
+    exit_code=$?
+    set -e
+
+    stop_status_heartbeat
+
+    return "$exit_code"
+}
+
+# ---------------------------------------------------------------------------
 # Prompt functions
 # ---------------------------------------------------------------------------
 
@@ -105,27 +173,27 @@ ask_choice() {
     local choice
 
     while true; do
-        echo ""
-        echo "${BOLD}$prompt${NC}"
-        echo ""
+        echo "" >&2
+        echo "${BOLD}$prompt${NC}" >&2
+        echo "" >&2
         for i in "${!options[@]}"; do
-            echo "  $((i+1)).  ${options[$i]}"
+            echo "  $((i+1)).  ${options[$i]}" >&2
         done
-        echo ""
-        printf "  Enter a number: "
+        echo "" >&2
+        printf "  Enter a number: " >&2
         read -r choice
-        echo ""
+        echo "" >&2
 
         case "$choice" in
             ''|*[!0-9]*)
-                print_warn "Please enter a number from the list."
+                print_warn "Please enter a number from the list." >&2
                 ;;
             *)
                 if [ "$choice" -ge 1 ] && [ "$choice" -le "${#options[@]}" ]; then
                     echo "$choice"
                     return 0
                 fi
-                print_warn "Please enter a number from the list."
+                print_warn "Please enter a number from the list." >&2
                 ;;
         esac
     done

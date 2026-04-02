@@ -6,6 +6,7 @@
 LIB_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 REPO_ROOT="$(cd "$LIB_DIR/../.." && pwd)"
 STATE_FILE="$REPO_ROOT/docs/reference/my-setup.md"
+PROGRESS_FILE="$REPO_ROOT/docs/reference/setup-progress.env"
 
 # Create the state file if it doesn't exist yet
 init_state_file() {
@@ -97,5 +98,102 @@ print_state_file_location() {
     print_blank
     print_info "Your install log has been updated:"
     print_info "  $STATE_FILE"
+    print_blank
+}
+
+# ---------------------------------------------------------------------------
+# Setup progress checkpoints
+# ---------------------------------------------------------------------------
+
+setup_progress_exists() {
+    [ -f "$PROGRESS_FILE" ]
+}
+
+write_setup_progress_file() {
+    local current_step="$1"
+    local last_completed_step="$2"
+    local next_step="$3"
+
+    mkdir -p "$(dirname "$PROGRESS_FILE")"
+
+    cat > "$PROGRESS_FILE" << EOF
+# Local progress checkpoint for scripts/setup.sh
+CURRENT_STEP=$current_step
+LAST_COMPLETED_STEP=$last_completed_step
+NEXT_STEP=$next_step
+UPDATED_AT=$(date '+%Y-%m-%d %H:%M')
+EOF
+}
+
+read_setup_progress_value() {
+    local key="$1"
+
+    if [ ! -f "$PROGRESS_FILE" ]; then
+        return 1
+    fi
+
+    awk -F= -v key="$key" '$1 == key { print substr($0, index($0, "=") + 1); exit }' "$PROGRESS_FILE"
+}
+
+get_setup_current_step() {
+    read_setup_progress_value "CURRENT_STEP" 2>/dev/null || true
+}
+
+get_setup_last_completed_step() {
+    read_setup_progress_value "LAST_COMPLETED_STEP" 2>/dev/null || true
+}
+
+get_setup_next_step() {
+    local next_step
+    next_step=$(read_setup_progress_value "NEXT_STEP" 2>/dev/null || true)
+
+    if [ -n "$next_step" ]; then
+        echo "$next_step"
+    else
+        echo "package_manager"
+    fi
+}
+
+describe_setup_step() {
+    case "$1" in
+        package_manager) echo "Step 1 of 4 — Package Manager" ;;
+        ollama)          echo "Step 2 of 4 — Ollama" ;;
+        dyad)            echo "Step 3 of 4 — Dyad" ;;
+        opencode)        echo "Step 3 of 4 — OpenCode" ;;
+        vscode)          echo "Step 3 of 4 — VS Code" ;;
+        paid_models)     echo "Step 4 of 4 — Paid Models" ;;
+        *)               echo "$1" ;;
+    esac
+}
+
+mark_setup_step_started() {
+    local step="$1"
+    local last_completed_step
+    last_completed_step=$(get_setup_last_completed_step)
+    write_setup_progress_file "$step" "$last_completed_step" "$step"
+}
+
+mark_setup_step_complete() {
+    local completed_step="$1"
+    local next_step="$2"
+    write_setup_progress_file "" "$completed_step" "$next_step"
+}
+
+clear_setup_progress() {
+    rm -f "$PROGRESS_FILE"
+}
+
+print_setup_resume_message() {
+    local next_step
+    next_step=$(get_setup_next_step)
+
+    if ! setup_progress_exists || [ "$next_step" = "package_manager" ]; then
+        return 0
+    fi
+
+    print_info "I found a previous setup session that did not finish."
+    print_info "We'll continue from: $(describe_setup_step "$next_step")"
+    print_info "Your local checkpoint is saved at:"
+    print_info "  $PROGRESS_FILE"
     print_blank
 }

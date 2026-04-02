@@ -71,6 +71,7 @@ OPENCODE_VERSION=$(get_tool_version opencode)
 
 if [ -n "$OPENCODE_VERSION" ]; then
     print_success "OpenCode is already installed  ($OPENCODE_VERSION)"
+    print_info "Next, choose whether to keep this version, update it, or stop here."
     print_blank
 
     choice=$(ask_choice "What would you like to do?" \
@@ -87,15 +88,15 @@ if [ -n "$OPENCODE_VERSION" ]; then
             case "$OS" in
                 macos)
                     if command -v brew &>/dev/null; then
-                        brew upgrade opencode
+                        run_with_status "Updating OpenCode" brew upgrade opencode
                         INSTALL_METHOD="Homebrew"
                     else
-                        curl -fsSL https://opencode.ai/install | sh
+                        run_with_status "Updating OpenCode" sh -c 'curl -fsSL https://opencode.ai/install | sh'
                         INSTALL_METHOD="install.sh"
                     fi
                     ;;
                 debian)
-                    curl -fsSL https://opencode.ai/install | sh
+                    run_with_status "Updating OpenCode" sh -c 'curl -fsSL https://opencode.ai/install | sh'
                     INSTALL_METHOD="install.sh"
                     ;;
             esac
@@ -123,17 +124,17 @@ else
         macos)
             if command -v brew &>/dev/null; then
                 print_info "Using Homebrew..."
-                brew install opencode
+                run_with_status "Installing OpenCode" brew install opencode
                 INSTALL_METHOD="Homebrew"
             else
                 print_info "Installing from opencode.ai..."
-                curl -fsSL https://opencode.ai/install | sh
+                run_with_status "Installing OpenCode" sh -c 'curl -fsSL https://opencode.ai/install | sh'
                 INSTALL_METHOD="install.sh"
             fi
             ;;
         debian)
             print_info "Installing from opencode.ai..."
-            curl -fsSL https://opencode.ai/install | sh
+            run_with_status "Installing OpenCode" sh -c 'curl -fsSL https://opencode.ai/install | sh'
             INSTALL_METHOD="install.sh"
             ;;
         *)

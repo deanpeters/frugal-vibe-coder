@@ -206,6 +206,8 @@ Each concept doc explains one idea in plain language — what it is, why it matt
 
 Both scripts walk you through the full setup in order — package manager, Ollama, then whichever learning surfaces you choose. Nothing is installed without your confirmation. If a script needs to replace an existing tool config, it asks first and creates a backup before changing anything.
 
+The guided setup scripts also keep a local checkpoint in `docs/reference/setup-progress.env`. If setup gets interrupted, rerunning the script resumes from the next unfinished step instead of making you start from the top mentally.
+
 ### Install tools individually
 
 ```bash

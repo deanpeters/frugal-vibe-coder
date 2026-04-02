@@ -51,6 +51,7 @@ INSTALL_METHOD="existing"
 
 if [ -n "$OLLAMA_VERSION" ]; then
     print_success "Ollama is already installed  ($OLLAMA_VERSION)"
+    print_info "Next, choose whether to keep this version, update it, or stop here."
     print_blank
 
     choice=$(ask_choice "What would you like to do?" \
@@ -67,7 +68,7 @@ if [ -n "$OLLAMA_VERSION" ]; then
             case "$OS" in
                 macos)
                     if command -v brew &>/dev/null; then
-                        brew upgrade ollama || print_warn "Update failed — continuing with current version."
+                        run_with_status "Updating Ollama" brew upgrade ollama || print_warn "Update failed — continuing with current version."
                         INSTALL_METHOD="Homebrew"
                     else
                         print_warn "Homebrew not found. We'll switch to the manual update path."
@@ -84,7 +85,7 @@ if [ -n "$OLLAMA_VERSION" ]; then
                     fi
                     ;;
                 debian)
-                    curl -fsSL https://ollama.com/install.sh | sh
+                    run_with_status "Updating Ollama" sh -c 'curl -fsSL https://ollama.com/install.sh | sh'
                     INSTALL_METHOD="install.sh"
                     ;;
             esac
@@ -116,7 +117,7 @@ else
         macos)
             if command -v brew &>/dev/null; then
                 print_info "Using Homebrew..."
-                brew install ollama
+                run_with_status "Installing Ollama" brew install ollama
                 INSTALL_METHOD="Homebrew"
             else
                 print_info "Downloading from ollama.com..."
@@ -138,7 +139,7 @@ else
             ;;
         debian)
             print_info "Downloading and running the official Ollama install script..."
-            curl -fsSL https://ollama.com/install.sh | sh
+            run_with_status "Installing Ollama" sh -c 'curl -fsSL https://ollama.com/install.sh | sh'
             INSTALL_METHOD="install.sh"
             ;;
         *)
@@ -166,8 +167,10 @@ else
 
     if ask "Download ${LOCAL_MODEL} now?"; then
         print_step "Pulling ${LOCAL_MODEL}..."
+        print_info "You should see model download progress below."
+        print_info "If it pauses briefly, it may still be downloading or unpacking files."
         print_blank
-        ollama pull "$LOCAL_MODEL"
+        run_with_status "Downloading ${LOCAL_MODEL}" ollama pull "$LOCAL_MODEL"
         print_success "Model ${LOCAL_MODEL} downloaded."
     else
         print_warn "Model not downloaded. You can download it later with:"

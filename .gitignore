@@ -20,6 +20,7 @@ frugal-vibe.conf.local
 # docs/reference/my-setup.md is written by install scripts and is local only
 # =============================================================================
 docs/reference/my-setup.md
+docs/reference/setup-progress.env
 
 # =============================================================================
 # macOS

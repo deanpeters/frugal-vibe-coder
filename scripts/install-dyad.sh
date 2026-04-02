@@ -70,6 +70,7 @@ INSTALL_METHOD="existing"
 if is_installed dyad; then
     DYAD_VERSION=$(get_tool_version dyad)
     print_success "Dyad is already installed  ($DYAD_VERSION)"
+    print_info "Next, choose whether to keep this version, update it, or stop here."
     print_blank
 
     choice=$(ask_choice "What would you like to do?" \
@@ -113,7 +114,7 @@ else
         macos)
             if command -v brew &>/dev/null; then
                 print_info "Using Homebrew..."
-                brew install --cask dyad
+                run_with_status "Installing Dyad" brew install --cask dyad
                 INSTALL_METHOD="Homebrew Cask"
             else
                 print_info "Homebrew not found — opening the Dyad download page..."

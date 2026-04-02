@@ -77,6 +77,7 @@ CONTINUE_STATE_CONTENT="| Item | Value |
 
 if [ -n "$VSCODE_VERSION" ]; then
     print_success "VS Code is already installed  ($VSCODE_VERSION)"
+    print_info "Next, choose whether to keep this version, update it, or stop here."
     print_blank
 
     choice=$(ask_choice "What would you like to do?" \
@@ -92,7 +93,7 @@ if [ -n "$VSCODE_VERSION" ]; then
             case "$OS" in
                 macos)
                     if command -v brew &>/dev/null; then
-                        brew upgrade --cask visual-studio-code
+                        run_with_status "Updating VS Code" brew upgrade --cask visual-studio-code
                         INSTALL_METHOD="Homebrew Cask"
                     else
                         open -a "Visual Studio Code" 2>/dev/null
@@ -102,7 +103,7 @@ if [ -n "$VSCODE_VERSION" ]; then
                     fi
                     ;;
                 debian)
-                    sudo apt install --only-upgrade -y code
+                    run_with_status "Updating VS Code" sudo apt install --only-upgrade -y code
                     INSTALL_METHOD="apt"
                     ;;
             esac
@@ -130,7 +131,7 @@ else
         macos)
             if command -v brew &>/dev/null; then
                 print_info "Using Homebrew..."
-                brew install --cask visual-studio-code
+                run_with_status "Installing VS Code" brew install --cask visual-studio-code
                 INSTALL_METHOD="Homebrew Cask"
             else
                 print_info "Opening the VS Code download page..."
@@ -147,11 +148,11 @@ else
             ;;
         debian)
             print_info "Adding the Microsoft package repository and installing VS Code..."
-            sudo apt install -y software-properties-common apt-transport-https curl
-            curl -sSL https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -
+            run_with_status "Installing VS Code prerequisites" sudo apt install -y software-properties-common apt-transport-https curl
+            run_with_status "Adding the Microsoft signing key" sh -c 'curl -sSL https://packages.microsoft.com/keys/microsoft.asc | sudo apt-key add -'
             sudo add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
-            sudo apt update -q
-            sudo apt install -y code
+            run_with_status "Refreshing the package list" sudo apt update -q
+            run_with_status "Installing VS Code" sudo apt install -y code
             INSTALL_METHOD="apt"
             ;;
         *)
@@ -197,7 +198,7 @@ print_blank
 
 if command -v code &>/dev/null; then
     print_step "Installing the Continue extension..."
-    code --install-extension continue.continue --force
+    run_with_status "Installing the Continue extension" code --install-extension continue.continue --force
 
     if code --list-extensions 2>/dev/null | grep -q "continue.continue"; then
         print_success "Continue extension installed."
