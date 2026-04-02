@@ -16,7 +16,7 @@ get_tool_version() {
             ollama --version 2>/dev/null
             ;;
         opencode)
-            opencode --version 2>/dev/null | head -1
+            command -v opencode &>/dev/null && echo "installed" || echo ""
             ;;
         code)
             # VS Code — the 'code' CLI command

@@ -125,7 +125,7 @@ function Get-ToolVersion($command) {
             if (Is-Installed "ollama") { return (ollama --version 2>$null) }
         }
         "opencode" {
-            if (Is-Installed "opencode") { return (opencode --version 2>$null | Select-Object -First 1) }
+            if (Is-Installed "opencode") { return "installed" }
         }
         "code" {
             if (Is-Installed "code") { return (code --version 2>$null | Select-Object -First 1) }
