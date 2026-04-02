@@ -87,10 +87,12 @@ if [ -n "$OPENCODE_VERSION" ]; then
             print_step "Updating OpenCode..."
             case "$OS" in
                 macos)
-                    if command -v brew &>/dev/null; then
+                    if brew_has_formula opencode; then
                         run_with_status "Updating OpenCode" brew upgrade opencode
                         INSTALL_METHOD="Homebrew"
                     else
+                        print_info "This OpenCode install is not managed by Homebrew."
+                        print_info "We'll use the official installer to update it."
                         run_with_status "Updating OpenCode" sh -c 'curl -fsSL https://opencode.ai/install | sh'
                         INSTALL_METHOD="install.sh"
                     fi

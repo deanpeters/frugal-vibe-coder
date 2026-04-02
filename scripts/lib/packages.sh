@@ -14,6 +14,18 @@ detect_package_manager() {
     fi
 }
 
+# Returns true when Homebrew manages the given formula.
+brew_has_formula() {
+    local package="$1"
+    command -v brew &>/dev/null && brew list --formula "$package" &>/dev/null
+}
+
+# Returns true when Homebrew manages the given cask.
+brew_has_cask() {
+    local package="$1"
+    command -v brew &>/dev/null && brew list --cask "$package" &>/dev/null
+}
+
 # Install a package using the available package manager.
 # Usage: pkg_install ollama
 pkg_install() {

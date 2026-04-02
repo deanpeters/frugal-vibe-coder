@@ -92,10 +92,11 @@ if [ -n "$VSCODE_VERSION" ]; then
         2)
             case "$OS" in
                 macos)
-                    if command -v brew &>/dev/null; then
+                    if brew_has_cask visual-studio-code; then
                         run_with_status "Updating VS Code" brew upgrade --cask visual-studio-code
                         INSTALL_METHOD="Homebrew Cask"
                     else
+                        print_info "This VS Code install is not managed by Homebrew."
                         open -a "Visual Studio Code" 2>/dev/null
                         print_info "Go to Help > Check for Updates in VS Code."
                         press_enter_to_continue

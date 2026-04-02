@@ -67,11 +67,12 @@ if [ -n "$OLLAMA_VERSION" ]; then
             print_step "Updating Ollama..."
             case "$OS" in
                 macos)
-                    if command -v brew &>/dev/null; then
+                    if brew_has_formula ollama; then
                         run_with_status "Updating Ollama" brew upgrade ollama || print_warn "Update failed — continuing with current version."
                         INSTALL_METHOD="Homebrew"
                     else
-                        print_warn "Homebrew not found. We'll switch to the manual update path."
+                        print_info "This Ollama install is not managed by Homebrew."
+                        print_info "We'll switch to the manual update path instead."
                         print_info "Opening the Ollama download page in your browser..."
                         open "https://ollama.com/download/mac" 2>/dev/null || \
                             print_info "Visit https://ollama.com/download to download Ollama manually."
