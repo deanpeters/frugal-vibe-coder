@@ -125,6 +125,18 @@ Scripts must also:
 
 `docs/reference/my-setup.md` is written and updated by install scripts. It records what is installed, what version, where its config lives, and which surface it supports. It is never committed.
 
+## Roadmap
+
+The full expansion plan is in `ROADMAP.md`. Five phases in order:
+
+1. **Sample projects** — 3–4 projects, each built across all three surfaces
+2. **Instructor resources** — workshop guides, setup checklists, troubleshooting
+3. **Paid model onboarding** — step-by-step key setup, when-to-pay framework, cost guidance
+4. **Prompts and templates** — PM-oriented, task-organized, copy-paste ready
+5. **Future surfaces** — n8n/Flowise → OpenClaw/OpenHands → SWE-agent (Docker introduced as a prerequisite when needed)
+
+Nothing in a future phase should be started until the prior phase is stable and reviewed. Each phase in `ROADMAP.md` has explicit scope, parameters, and open decisions.
+
 ## Future Scope (Deferred)
 
 Three additional surface categories are on the roadmap but not yet in active scope. Do not implement or document them as available until explicitly moved to active:

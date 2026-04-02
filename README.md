@@ -178,13 +178,17 @@ Core principle: minimize setup friction, maximize learning signal.
 
 ## What's Coming
 
-The current three surfaces (no-code, CLI, IDE) are the foundation. Future surfaces under consideration:
+The current three surfaces (no-code, CLI, IDE) are the foundation. The full expansion plan is in `ROADMAP.md`. In brief:
 
-- **Visual agent-flow builders** — n8n (self-hosted), Flowise
-- **Autonomous agent platforms** — OpenClaw, OpenHands
-- **Coding agent frameworks** — SWE-agent
+| Phase | Focus |
+|-------|-------|
+| 2 | Sample projects — the same app built three ways |
+| 3 | Instructor resources — workshops, setup checklists, troubleshooting |
+| 4 | Paid model onboarding — when, how, and how to stay in control of costs |
+| 5 | Prompts and templates — PM-oriented, copy-paste ready |
+| 6 | Future surfaces — n8n, Flowise, OpenClaw, OpenHands, SWE-agent |
 
-None of these are available yet. They will be introduced only when they can be done in a way that fits the learning platform principles of this repo.
+None of the phase 6 surfaces are available yet. They will be introduced only when they can be done in a way that fits the learning platform principles of this repo.
 
 ---
 
@@ -197,4 +201,4 @@ Before contributing, read `AGENTS.md` for the full operating philosophy and non-
 - Is there a simpler, more local-first alternative?
 - Does this teach judgment, not just procedure?
 
-See `CLAUDE.md` for technical standards, the configuration architecture, and the `/docs` structure.
+See `CLAUDE.md` for technical standards, the configuration architecture, and the `/docs` structure. See `ROADMAP.md` for the full expansion plan.
