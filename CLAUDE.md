@@ -106,6 +106,14 @@ When adding or revising content, apply this decision framework (in order):
 4. Does it support real learning, not just output generation?
 5. Is the interface appropriate for the learner's current stage?
 
+If the work involves proposing or adding a tool, workflow, or future surface, read `SUBMISSIONS.md` first. That file is the explicit guide for what this repo considers a good fit.
+
+Key tool-selection principles:
+- open source is strongly preferred
+- free versions are acceptable only if they are genuinely useful for learning
+- affordability, ease of use, and learning value are the main gates
+- closed-source tools must clear a higher bar on learner value and low lock-in
+
 **Documentation must:** state purpose first, list prerequisites explicitly, distinguish required from optional steps, explain *why* a choice was made, and identify which learner profile a guide targets.
 
 **Script standards:** use conservative model defaults (7B–8B), fail loudly with clear output, print next steps, minimize admin privileges, separate core installs from optional model pulls.

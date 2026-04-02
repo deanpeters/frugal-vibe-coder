@@ -652,6 +652,34 @@ If the answer is unfavorable, revise before committing.
 
 ---
 
+## Tool Admission Criteria
+
+This repo should not add tools casually. New tools, workflows, and surfaces should meet explicit admission criteria before they are documented, scripted, or treated as supported.
+
+Core priorities:
+
+1. **Learning value** — the tool should help learners build durable, transferable understanding
+2. **Ease of use** — the tool should be realistic for beginners and mixed-skill learners
+3. **Affordability** — the tool should have a genuinely usable free path or affordable starting path
+4. **Openness and portability** — open source is strongly preferred, and low lock-in matters
+
+Free versions are acceptable only when they are not heavily crippled. A learner should be able to meaningfully try the tool and complete a small learning exercise without immediately being pushed into paid usage.
+
+Closed-source tools can still be considered, but they should clear a higher bar on affordability, ease of use, and learning value.
+
+Before adding a tool, ask:
+
+1. Can a learner start with this affordably?
+2. Can a learner use it without advanced technical confidence?
+3. Does it teach something durable?
+4. Is the free path genuinely useful?
+5. Does it work on ordinary hardware?
+6. Does it fit a real need in no-code, CLI, IDE, or a future surface?
+
+Use `SUBMISSIONS.md` as the explicit public-facing guide for evaluating and proposing tools.
+
+---
+
 ## Preferred Decision Framework
 
 When evaluating tools or workflows, use this order:

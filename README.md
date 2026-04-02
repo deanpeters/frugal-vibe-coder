@@ -279,6 +279,20 @@ These are not all active or documented yet. They will be introduced only when th
 
 ---
 
+## Tool Criteria
+
+This repo does not aim to include every AI tool. It aims to include tools that support affordable learning, beginner-friendly use, and durable skill-building.
+
+The short version:
+
+- open source is strongly preferred
+- free versions are fine only if they are genuinely useful, not heavily crippled
+- affordability, ease of use, and learning value are the main gates
+
+If you want to understand how tools are evaluated or propose one for the repo, see [SUBMISSIONS.md](SUBMISSIONS.md).
+
+---
+
 ## Contributing
 
 Before contributing, read `AGENTS.md` for the full operating philosophy and non-negotiable rules. The short version:
@@ -287,5 +301,7 @@ Before contributing, read `AGENTS.md` for the full operating philosophy and non-
 - Does this assume access or experience many people don't have?
 - Is there a simpler, more local-first alternative?
 - Does this teach judgment, not just procedure?
+
+If you are proposing a tool, workflow, or learning surface, read `SUBMISSIONS.md` first.
 
 See `CLAUDE.md` for technical standards, the configuration architecture, and the `/docs` structure. See `ROADMAP.md` for the full expansion plan.
