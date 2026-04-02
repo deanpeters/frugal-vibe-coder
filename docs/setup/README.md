@@ -4,6 +4,35 @@ These guides walk you through installing everything you need, one tool at a time
 
 ---
 
+## Easiest option
+
+If you want the repo to guide you through setup, start here instead of doing each tool by hand:
+
+First get the repo onto your machine by downloading the GitHub ZIP or cloning it.
+
+From the repo root:
+
+**macOS / Linux**
+```bash
+./scripts/setup.sh
+```
+
+**Windows** (PowerShell as Administrator)
+```powershell
+.\scripts\setup.ps1
+```
+
+Those scripts:
+- walk you through the recommended order
+- ask before changing anything
+- verify manual installs before continuing
+- back up an existing config before replacing it
+- update `docs/reference/my-setup.md` so you can see what changed
+
+Use the rest of this section if you prefer tool-by-tool guides or want to understand each install manually.
+
+---
+
 ## Recommended order
 
 Work through these in order. Each one builds on the previous.
@@ -31,3 +60,5 @@ You don't have to install all five. If you only want the no-code path, steps 1â€
 ## Your install log
 
 As you complete each guide, the setup scripts will record what was installed and where in `docs/reference/my-setup.md`. That file is local to your machine and never shared. Check it any time you want to see what you have and where its config lives.
+
+If you rerun setup later, the scripts update the relevant sections instead of piling up duplicate entries.

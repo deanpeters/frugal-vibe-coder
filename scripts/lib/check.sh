@@ -74,3 +74,65 @@ print_tool_status() {
         print_warn "$label is not installed"
     fi
 }
+
+# For manual installs, wait until a tool can actually be detected.
+# Returns 0 when detected, 1 if the user chooses to stop for now.
+wait_for_tool_install() {
+    local tool="$1"
+    local label="${2:-$tool}"
+    local version
+    local choice
+
+    while true; do
+        press_enter_to_continue "Press Enter after you've finished installing ${label}, and I'll check it."
+
+        version=$(get_tool_version "$tool")
+        if [ -n "$version" ]; then
+            print_success "${label} is installed  (${version})"
+            return 0
+        fi
+
+        print_warn "${label} still isn't showing as installed."
+        print_info "If the installer is still open, finish that first, then check again."
+        print_blank
+
+        choice=$(ask_choice "What would you like to do?" \
+            "Check again" \
+            "Exit for now and come back later")
+
+        case "$choice" in
+            1) ;;
+            2) return 1 ;;
+        esac
+    done
+}
+
+# For manual GUI installs, wait until an expected file or folder appears.
+# Returns 0 when detected, 1 if the user chooses to stop for now.
+wait_for_path_install() {
+    local expected_path="$1"
+    local label="$2"
+    local choice
+
+    while true; do
+        press_enter_to_continue "Press Enter after you've finished installing ${label}, and I'll check it."
+
+        if [ -e "$expected_path" ]; then
+            print_success "${label} is installed."
+            return 0
+        fi
+
+        print_warn "${label} still isn't showing as installed."
+        print_info "If the installer is still open, finish that first, then check again."
+        print_blank
+
+        choice=$(ask_choice "What would you like to do?" \
+            "Check again" \
+            "Exit for now and come back later")
+
+        case "$choice" in
+            1) ;;
+            2) return 1 ;;
+        esac
+    done
+}

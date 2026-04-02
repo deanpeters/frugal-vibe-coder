@@ -4,6 +4,20 @@ A learning surface is the environment where you build. This repo supports three.
 
 ---
 
+## Before you choose
+
+Make sure the basics are in place first:
+
+- easiest route: run the guided setup script for your platform from the repo root
+- manual route: start in [docs/setup](../setup/)
+
+If you're brand new, the lowest-friction first path is usually:
+- install Ollama
+- start with Dyad
+- move to OpenCode or VS Code only when you want more visibility or more direct control
+
+---
+
 ## The three surfaces
 
 | Surface | Tool | Best for |

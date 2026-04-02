@@ -16,6 +16,19 @@ Install Dyad, connect it to your local Ollama model, and build something small t
 
 ---
 
+## Fastest path with this repo
+
+If you already have this repo on your machine and want the guided version of this setup:
+
+- macOS / Linux: run `./scripts/install-dyad.sh`
+- Windows: run `.\scripts\setup.ps1` and choose Dyad in Step 3
+
+The script version checks whether Ollama is ready first, verifies manual installs before continuing, and updates your local setup log when it is done.
+
+Use the rest of this guide if you want to install Dyad manually or understand the setup in more detail.
+
+---
+
 ## Check if you already have Dyad
 
 Look for Dyad in your applications:

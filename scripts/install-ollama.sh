@@ -47,6 +47,7 @@ print_blank
 
 OLLAMA_VERSION=$(get_tool_version ollama)
 OS=$(detect_os)
+INSTALL_METHOD="existing"
 
 if [ -n "$OLLAMA_VERSION" ]; then
     print_success "Ollama is already installed  ($OLLAMA_VERSION)"
@@ -67,12 +68,24 @@ if [ -n "$OLLAMA_VERSION" ]; then
                 macos)
                     if command -v brew &>/dev/null; then
                         brew upgrade ollama || print_warn "Update failed — continuing with current version."
+                        INSTALL_METHOD="Homebrew"
                     else
-                        print_warn "Homebrew not found. Download the latest version from ollama.com/download"
+                        print_warn "Homebrew not found. We'll switch to the manual update path."
+                        print_info "Opening the Ollama download page in your browser..."
+                        open "https://ollama.com/download/mac" 2>/dev/null || \
+                            print_info "Visit https://ollama.com/download to download Ollama manually."
+                        print_blank
+                        print_info "Download the installer, run it, then come back here."
+                        if ! wait_for_tool_install ollama "Ollama"; then
+                            print_info "Stopping here for now. Run ./scripts/install-ollama.sh again when you're ready."
+                            exit 0
+                        fi
+                        INSTALL_METHOD="manual download"
                     fi
                     ;;
                 debian)
                     curl -fsSL https://ollama.com/install.sh | sh
+                    INSTALL_METHOD="install.sh"
                     ;;
             esac
             print_success "Ollama updated."
@@ -104,6 +117,7 @@ else
             if command -v brew &>/dev/null; then
                 print_info "Using Homebrew..."
                 brew install ollama
+                INSTALL_METHOD="Homebrew"
             else
                 print_info "Downloading from ollama.com..."
                 print_warn "Homebrew is not installed — installing directly from ollama.com."
@@ -114,12 +128,18 @@ else
                 open "https://ollama.com/download/mac" 2>/dev/null || \
                     print_info "Visit https://ollama.com/download to download Ollama manually."
                 print_blank
-                press_enter_to_continue
+                print_info "Download the installer, run it, then come back here."
+                if ! wait_for_tool_install ollama "Ollama"; then
+                    print_info "Stopping here for now. Run ./scripts/install-ollama.sh again when you're ready."
+                    exit 0
+                fi
+                INSTALL_METHOD="manual download"
             fi
             ;;
         debian)
             print_info "Downloading and running the official Ollama install script..."
             curl -fsSL https://ollama.com/install.sh | sh
+            INSTALL_METHOD="install.sh"
             ;;
         *)
             print_error "Unsupported platform. Visit https://ollama.com/download for instructions."
@@ -191,7 +211,7 @@ CONFIG_LOCATION="\$HOME/.ollama/"
 record_install \
     "Ollama" \
     "${OLLAMA_VERSION:-unknown}" \
-    "$([ -n "$(command -v brew)" ] && echo "Homebrew" || echo "install.sh")" \
+    "$INSTALL_METHOD" \
     "$CONFIG_LOCATION" \
     "No-code (Dyad), CLI (OpenCode), IDE (VS Code)"
 

@@ -18,6 +18,19 @@ Install VS Code, add a minimal set of extensions for AI-assisted development, an
 
 ---
 
+## Fastest path with this repo
+
+If you already have this repo on your machine and want the guided version of this setup:
+
+- macOS / Linux: run `./scripts/install-vscode.sh`
+- Windows: run `.\scripts\setup.ps1` and choose VS Code in Step 3
+
+The script version installs Continue when possible, asks before replacing an existing Continue config, and creates a backup if you choose replace.
+
+Use the rest of this guide if you want to install or configure VS Code manually.
+
+---
+
 ## Check if you already have VS Code
 
 Open Terminal (Mac/Linux) or PowerShell (Windows) and run:
@@ -88,7 +101,7 @@ What this does: adds Microsoft's official package repository to your system and 
 
 ## Install extensions
 
-VS Code's power comes from extensions. For this setup, you need exactly two — one for AI assistance, one for working with the kinds of files you'll encounter.
+VS Code's power comes from extensions. For this setup, you need exactly one required extension.
 
 Open VS Code, then open the Extensions panel (`Ctrl+Shift+X` on Windows/Linux, `Cmd+Shift+X` on Mac).
 
@@ -98,13 +111,9 @@ Search for **Continue** and install it.
 
 What it does: adds an AI chat panel and inline suggestions to VS Code, and supports Ollama as a local provider — meaning your AI assistance stays free and on your machine.
 
-### Recommended: GitHub Copilot (optional, paid)
-
-Skip this for now. Continue with Ollama covers the same ground for free. Copilot becomes worth evaluating once you're doing regular code work and want to compare.
-
----
-
 ## Configure Continue to use Ollama
+
+If you use `./scripts/install-vscode.sh`, this configuration step can be done for you. If you already have a Continue config, the script asks before replacing it and backs it up first.
 
 After installing Continue:
 

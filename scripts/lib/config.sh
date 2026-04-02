@@ -40,7 +40,7 @@ check_api_key() {
 
     case "$provider" in
         anthropic)
-            if [ -z "$ANTHROPIC_API_KEY" ]; then
+            if [ -z "${ANTHROPIC_API_KEY:-}" ]; then
                 print_error "ANTHROPIC_API_KEY is not set in your environment."
                 print_blank
                 print_info "To fix this, add the following line to your shell profile:"
@@ -61,7 +61,7 @@ check_api_key() {
             fi
             ;;
         openai)
-            if [ -z "$OPENAI_API_KEY" ]; then
+            if [ -z "${OPENAI_API_KEY:-}" ]; then
                 print_error "OPENAI_API_KEY is not set in your environment."
                 print_blank
                 print_info "To fix this, add the following line to your shell profile:"
@@ -92,6 +92,24 @@ check_api_key() {
     esac
 
     return 0
+}
+
+# Back up a file before replacing it.
+# Prints the backup location so the learner knows how to recover if needed.
+backup_file_if_exists() {
+    local file_path="$1"
+    local label="${2:-$(basename "$file_path")}"
+    local backup_path
+
+    if [ ! -f "$file_path" ]; then
+        return 0
+    fi
+
+    backup_path="${file_path}.bak.$(date '+%Y%m%d-%H%M%S')"
+    cp "$file_path" "$backup_path"
+
+    print_info "Backed up your existing ${label} to:"
+    print_info "  $backup_path"
 }
 
 # Print a summary of the current model configuration

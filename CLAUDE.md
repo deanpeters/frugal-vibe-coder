@@ -8,6 +8,12 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Scripts
 
+For learner-facing onboarding, prefer the repo's beginner-first path:
+- download ZIP from GitHub or clone the repo
+- run `./scripts/setup.sh` on macOS/Linux
+- run `.\scripts\setup.ps1` on Windows
+- start most beginners with Ollama + Dyad before suggesting CLI or IDE paths
+
 ### Entry points
 
 ```bash
@@ -24,18 +30,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 ./scripts/install-vscode.sh      # Install VS Code + Continue extension (IDE surface)
 ```
 
-Each installer: checks current state → offers use/update/install → explains every step → writes to `docs/reference/my-setup.md`.
+Each installer: checks current state → offers use/update/install → validates learner input → explains every step → verifies manual installs before moving on → writes to `docs/reference/my-setup.md`.
 
 ### Shared library (`scripts/lib/`)
 
 | File | Responsibility |
 |------|---------------|
-| `ui.sh` | Colors, print helpers, yes/no prompts, numbered choices |
+| `ui.sh` | Colors, print helpers, validated yes/no prompts, validated numbered choices |
 | `platform.sh` | OS detection (macos/debian), arch detection, platform guard |
 | `packages.sh` | Detect brew/apt, `pkg_install`, `pkg_upgrade`, `apt_update_if_needed` |
-| `check.sh` | `get_tool_version`, `is_installed`, `ollama_model_exists` |
-| `config.sh` | Load `frugal-vibe.conf` + local overrides, `check_api_key` with clear error messages |
-| `state.sh` | Init and write `docs/reference/my-setup.md`, `record_install` |
+| `check.sh` | `get_tool_version`, `is_installed`, `ollama_model_exists`, manual-install verification helpers |
+| `config.sh` | Load `frugal-vibe.conf` + local overrides, `check_api_key`, backup helper before config replacement |
+| `state.sh` | Init and write `docs/reference/my-setup.md`, replace named sections, `record_install` |
 
 ### Configuration
 
@@ -107,7 +113,9 @@ When adding or revising content, apply this decision framework (in order):
 Scripts must also:
 - Detect package managers (Homebrew on Mac, Chocolatey on Windows) and use them when available — they produce cleaner installs and easier updates
 - Check whether each tool is already installed before doing anything; present three explicit choices: use what's there, update, or install fresh
-- Never silently overwrite an existing installation
+- Verify manual installs before continuing to the next step
+- Back up an existing config before replacing it
+- Never silently overwrite an existing installation or leave the learner half-configured if a required prerequisite is missing
 
 **Tone:** practical, respectful, direct, pedagogic. Avoid hype, startup theater, and "anyone can build anything instantly" language.
 

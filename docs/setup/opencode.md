@@ -18,6 +18,19 @@ Install OpenCode, configure it to use your local Ollama model, and run a quick t
 
 ---
 
+## Fastest path with this repo
+
+If you already have this repo on your machine and want the guided version of this setup:
+
+- macOS / Linux: run `./scripts/install-opencode.sh`
+- Windows: run `.\scripts\setup.ps1` and choose OpenCode in Step 3
+
+The script version checks whether Ollama is ready first, asks before changing an existing config, and creates a backup if you choose to replace that config.
+
+Use the rest of this guide if you want to install or configure OpenCode manually.
+
+---
+
 ## Check if you already have OpenCode
 
 Open Terminal (Mac/Linux) or PowerShell (Windows) and run:
@@ -80,6 +93,8 @@ What this does: downloads the official install script from opencode.ai and runs 
 ---
 
 ## Configure OpenCode to use Ollama
+
+If you use `./scripts/install-opencode.sh`, this configuration step can be done for you. If you already have an OpenCode config, the script asks before replacing it and backs it up first.
 
 OpenCode needs to know which model to use. Run:
 

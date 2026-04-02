@@ -30,6 +30,53 @@ This repo is built for you.
 
 ---
 
+## Quick Start
+
+If you're on a Mac and you want the simplest path, do this:
+
+1. Get the repo onto your machine.
+
+If you do **not** use git yet:
+- On GitHub, click **Code** → **Download ZIP**
+- Unzip the file
+- Move the folder somewhere easy to find, like your Desktop or Documents
+
+If you **do** use git:
+
+```bash
+git clone https://github.com/deanpeters/frugal-vibe-coder.git
+cd frugal-vibe-coder
+```
+
+2. Open Terminal.
+3. Move into the project folder.
+
+If you downloaded the ZIP and the folder is on your Desktop, the folder name may be `frugal-vibe-coder-main`:
+
+```bash
+cd ~/Desktop/frugal-vibe-coder-main
+```
+
+4. Run the guided setup:
+
+```bash
+./scripts/setup.sh
+```
+
+That script walks you through the setup in plain language, checks what is already installed, and asks before making changes.
+
+**Best first path for most beginners on Mac:**
+- install Ollama
+- choose Dyad as your first learning surface
+- come back later for OpenCode or VS Code when you want more visibility or control
+
+If you'd rather read first and run later:
+- [docs/setup/README.md](docs/setup/README.md)
+- [docs/concepts/what-is-ollama.md](docs/concepts/what-is-ollama.md)
+- [docs/surfaces/README.md](docs/surfaces/README.md)
+
+---
+
 ## What You'll Learn
 
 This is not a list of tools. It is a set of skills:
@@ -126,7 +173,7 @@ Each concept doc explains one idea in plain language — what it is, why it matt
 .\scripts\setup.ps1
 ```
 
-Both scripts walk you through the full setup in order — package manager, Ollama, then whichever learning surfaces you choose. Nothing is installed without your confirmation.
+Both scripts walk you through the full setup in order — package manager, Ollama, then whichever learning surfaces you choose. Nothing is installed without your confirmation. If a script needs to replace an existing tool config, it asks first and creates a backup before changing anything.
 
 ### Install tools individually
 
@@ -137,9 +184,9 @@ Both scripts walk you through the full setup in order — package manager, Ollam
 ./scripts/install-vscode.sh      # VS Code + Continue — IDE surface
 ```
 
-Each script checks what you already have, explains every step, and records the result in `docs/reference/my-setup.md`.
+Each script checks what you already have, explains every step, verifies manual installs before moving on, and records the result in `docs/reference/my-setup.md`.
 
-Scripts detect your package manager (Homebrew, apt, Chocolatey) and use it when available. Nothing is overwritten without asking.
+Scripts detect your package manager (Homebrew, apt, Chocolatey) and use it when available. Existing configs are left alone unless you choose to replace them, and backups are created first.
 
 ---
 

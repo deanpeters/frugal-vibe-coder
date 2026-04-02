@@ -14,6 +14,19 @@ Install Ollama, download the `qwen3:8b` model, and verify that everything is run
 
 ---
 
+## Fastest path with this repo
+
+If you already have this repo on your machine and want the guided version of this setup:
+
+- macOS / Linux: run `./scripts/install-ollama.sh`
+- Windows: run `.\scripts\setup.ps1` and choose Ollama in Step 2
+
+The script version checks your current state, offers use/update/install choices, verifies the install before moving on, and records the result in `docs/reference/my-setup.md`.
+
+Use the rest of this guide if you want to understand or perform the install manually.
+
+---
+
 ## Check if you already have Ollama
 
 Open Terminal (Mac/Linux) or PowerShell (Windows) and run:

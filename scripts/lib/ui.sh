@@ -72,11 +72,27 @@ print_divider() {
 ask() {
     local prompt="$1"
     local response
-    echo ""
-    printf "${BOLD}%s${NC} [y/n] " "$prompt"
-    read -r response
-    echo ""
-    [[ "$response" =~ ^[Yy]$ ]]
+
+    while true; do
+        echo ""
+        printf "${BOLD}%s${NC} [y/n] " "$prompt"
+        read -r response
+        echo ""
+
+        response=$(printf '%s' "$response" | tr '[:upper:]' '[:lower:]')
+
+        case "$response" in
+            y|yes)
+                return 0
+                ;;
+            n|no)
+                return 1
+                ;;
+            *)
+                print_warn "Please type y or n."
+                ;;
+        esac
+    done
 }
 
 # Ask the user to choose from a numbered list.
@@ -88,23 +104,39 @@ ask_choice() {
     local options=("$@")
     local choice
 
-    echo ""
-    echo "${BOLD}$prompt${NC}"
-    echo ""
-    for i in "${!options[@]}"; do
-        echo "  $((i+1)).  ${options[$i]}"
+    while true; do
+        echo ""
+        echo "${BOLD}$prompt${NC}"
+        echo ""
+        for i in "${!options[@]}"; do
+            echo "  $((i+1)).  ${options[$i]}"
+        done
+        echo ""
+        printf "  Enter a number: "
+        read -r choice
+        echo ""
+
+        case "$choice" in
+            ''|*[!0-9]*)
+                print_warn "Please enter a number from the list."
+                ;;
+            *)
+                if [ "$choice" -ge 1 ] && [ "$choice" -le "${#options[@]}" ]; then
+                    echo "$choice"
+                    return 0
+                fi
+                print_warn "Please enter a number from the list."
+                ;;
+        esac
     done
-    echo ""
-    printf "  Enter a number: "
-    read -r choice
-    echo ""
-    echo "$choice"
 }
 
 # Pause and wait for the user to press Enter before continuing
 press_enter_to_continue() {
+    local prompt="${1:-Press Enter to continue...}"
+
     echo ""
-    printf "  Press Enter to continue..."
+    printf "  %s" "$prompt"
     read -r
     echo ""
 }

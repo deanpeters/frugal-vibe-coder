@@ -4,6 +4,20 @@ This is the learning core of frugal-vibe-coder. If you're not sure where to star
 
 ---
 
+## Fastest path
+
+If you want the shortest route to a working setup:
+
+- first get the repo onto your machine by downloading the GitHub ZIP or cloning it
+- macOS / Linux: run `./scripts/setup.sh`
+- Windows: run `.\scripts\setup.ps1` in PowerShell as Administrator
+
+Those guided scripts explain each step, check what is already installed, verify manual installs before moving on, and write a local setup record to `docs/reference/my-setup.md`.
+
+If you prefer to read first and install one tool at a time, keep going below.
+
+---
+
 ## Where to look
 
 | What you need | Where to go |
@@ -17,8 +31,8 @@ This is the learning core of frugal-vibe-coder. If you're not sure where to star
 
 ## If you're just starting
 
-1. Read [What is Ollama?](concepts/what-is-ollama.md) — it's what powers everything here
-2. Follow the [Ollama setup guide](setup/ollama.md) for your platform
+1. If you want the easiest route, run the guided setup script for your platform
+2. Read [What is Ollama?](concepts/what-is-ollama.md) if you want the mental model first
 3. Choose a surface and follow its setup guide: [Dyad](setup/dyad.md) · [OpenCode](setup/opencode.md) · [VS Code](setup/vscode.md)
 4. Check [/reference](reference/) any time you need to find a config or see what's installed
 

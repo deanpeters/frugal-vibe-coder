@@ -371,12 +371,17 @@ Avoid:
 ### Documentation Style
 Documentation should:
 - begin with purpose
+- include a beginner-first quick start near the top when the file is a primary entry point
 - state prerequisites explicitly
 - list costs and constraints
 - distinguish required from optional steps
 - include troubleshooting
 - explain why a choice was made
 - identify which learner profile a guide is for
+
+When a learner needs the repo on their machine, docs should not assume git fluency by default. Prefer offering both:
+- a GitHub **Download ZIP** path for beginners
+- a `git clone` path for learners who already use git
 
 ### Comparisons
 When comparing tools, include:
@@ -439,6 +444,15 @@ Before installing any tool, scripts must check whether it is already installed. 
 Never silently overwrite an existing installation. Never assume a missing tool must be installed — the learner may have a reason for not having it, or may want to install it manually.
 
 This pattern teaches learners to think about system state, not just follow steps blindly. It also prevents the repo from being destructive on machines with existing setups.
+
+If a manual installer is used, scripts should verify that the tool actually appears before continuing. Do not treat "press Enter when you're done" as proof that the install succeeded.
+
+If a script needs to replace an existing config file, it must:
+- explain what will change
+- offer the learner a keep-or-replace choice
+- create a backup first if the learner chooses replace
+
+If a required prerequisite is still missing after the learner declines or exits, stop cleanly and tell them what to run next. Do not march them into a half-configured state.
 
 ### Configuration and model selection
 
@@ -582,10 +596,10 @@ Every install script must write a record of what it did to `docs/reference/my-se
 Each entry should include:
 - tool name and version installed
 - installation method (package manager, direct download, etc.)
-- platform
 - config file location(s)
 - which learning surface(s) it supports
-- date installed
+
+The file should also include a top-level "last updated" timestamp. When a learner reruns setup, scripts should update the relevant section instead of appending duplicate sections that compete with each other.
 
 This file serves two purposes: practical (the learner can always check what they have and where to find its config) and pedagogic (it makes the installed environment visible and understandable, not a black box).
 

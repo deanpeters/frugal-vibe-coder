@@ -55,25 +55,120 @@ function Print-Info($text) {
 }
 
 function Ask-YesNo($prompt) {
-    Write-Host ""
-    $response = Read-Host "$prompt [y/n]"
-    return $response -match '^[Yy]$'
+    while ($true) {
+        Write-Host ""
+        $response = (Read-Host "$prompt [y/n]").Trim().ToLower()
+
+        if ($response -in @("y", "yes")) {
+            return $true
+        }
+
+        if ($response -in @("n", "no")) {
+            return $false
+        }
+
+        Print-Warn "Please type y or n."
+    }
 }
 
 function Ask-Choice($prompt, $options) {
-    Write-Host ""
-    Write-Host $prompt -ForegroundColor White
-    Write-Host ""
-    for ($i = 0; $i -lt $options.Count; $i++) {
-        Write-Host "  $($i + 1).  $($options[$i])"
+    while ($true) {
+        Write-Host ""
+        Write-Host $prompt -ForegroundColor White
+        Write-Host ""
+        for ($i = 0; $i -lt $options.Count; $i++) {
+            Write-Host "  $($i + 1).  $($options[$i])"
+        }
+        Write-Host ""
+        $choice = Read-Host "  Enter a number"
+
+        if ($choice -match '^\d+$') {
+            $number = [int]$choice
+            if ($number -ge 1 -and $number -le $options.Count) {
+                return $number
+            }
+        }
+
+        Print-Warn "Please enter a number from the list."
     }
+}
+
+function Press-EnterToContinue($prompt = "Press Enter to continue") {
     Write-Host ""
-    $choice = Read-Host "  Enter a number"
-    return [int]$choice
+    Read-Host $prompt | Out-Null
 }
 
 function Is-Installed($command) {
     return $null -ne (Get-Command $command -ErrorAction SilentlyContinue)
+}
+
+function Get-ToolVersion($command) {
+    switch ($command) {
+        "choco" {
+            if (Is-Installed "choco") { return (choco --version 2>$null) }
+        }
+        "ollama" {
+            if (Is-Installed "ollama") { return (ollama --version 2>$null) }
+        }
+        "opencode" {
+            if (Is-Installed "opencode") { return (opencode --version 2>$null | Select-Object -First 1) }
+        }
+        "code" {
+            if (Is-Installed "code") { return (code --version 2>$null | Select-Object -First 1) }
+        }
+    }
+
+    return ""
+}
+
+function Test-VSCodeInstalled {
+    return (
+        (Is-Installed "code") -or
+        (Test-Path "$env:LOCALAPPDATA\Programs\Microsoft VS Code\Code.exe") -or
+        (Test-Path "$env:ProgramFiles\Microsoft VS Code\Code.exe")
+    )
+}
+
+function Test-DyadInstalled {
+    return (
+        (Is-Installed "dyad") -or
+        (Test-Path "$env:LOCALAPPDATA\Programs\Dyad\Dyad.exe") -or
+        (Test-Path "$env:ProgramFiles\Dyad\Dyad.exe")
+    )
+}
+
+function Wait-ForCheck($label, [scriptblock]$test) {
+    while ($true) {
+        Press-EnterToContinue "Press Enter after you've finished installing $label, and I'll check it"
+
+        if (& $test) {
+            Print-Success "$label is installed."
+            return $true
+        }
+
+        Print-Warn "$label still isn't showing as installed."
+        Print-Info "If the installer is still open, finish that first, then check again."
+
+        $choice = Ask-Choice "What would you like to do?" @(
+            "Check again",
+            "Exit for now and come back later"
+        )
+
+        if ($choice -eq 2) {
+            return $false
+        }
+    }
+}
+
+function Backup-FileIfExists($filePath, $label) {
+    if (-not (Test-Path $filePath)) {
+        return
+    }
+
+    $backupPath = "$filePath.bak.$(Get-Date -Format 'yyyyMMdd-HHmmss')"
+    Copy-Item -Path $filePath -Destination $backupPath -Force
+    Print-Info "Backed up your existing $label to:"
+    Print-Info "  $backupPath"
 }
 
 function Load-Config {
@@ -98,7 +193,7 @@ function Load-Config {
     }
 }
 
-function Write-StateRecord($tool, $version, $method, $configLocation, $surfaces) {
+function Initialize-StateFile {
     $stateFile = Join-Path $PSScriptRoot "..\docs\reference\my-setup.md"
     $stateDir = Split-Path $stateFile
 
@@ -109,10 +204,32 @@ function Write-StateRecord($tool, $version, $method, $configLocation, $surfaces)
     if (-not (Test-Path $stateFile)) {
         $header = "# My Setup`n`n*Generated and updated by frugal-vibe-coder install scripts. Last updated: $(Get-Date -Format 'yyyy-MM-dd HH:mm')*`n`n---`n"
         Set-Content -Path $stateFile -Value $header
+        return $stateFile
     }
 
-    $entry = "`n## $tool`n`n| Item | Value |`n|------|-------|`n| Version | $version |`n| Installed via | $method |`n| Config location | ``$configLocation`` |`n| Surfaces supported | $surfaces |`n"
-    Add-Content -Path $stateFile -Value $entry
+    $content = Get-Content -Path $stateFile -Raw
+    $timestamp = Get-Date -Format 'yyyy-MM-dd HH:mm'
+
+    if ($content -match 'Last updated: .*?\*') {
+        $content = [regex]::Replace($content, 'Last updated: .*?\*', "Last updated: $timestamp*")
+        Set-Content -Path $stateFile -Value $content
+    }
+
+    return $stateFile
+}
+
+function Write-StateSection($tool, $content) {
+    $stateFile = Initialize-StateFile
+    $existing = Get-Content -Path $stateFile -Raw
+    $pattern = "(?ms)^## " + [regex]::Escape($tool) + "\r?\n.*?(?=^## |\z)"
+    $updated = [regex]::Replace($existing, $pattern, "").TrimEnd()
+    $section = "`r`n`r`n## $tool`r`n`r`n$content`r`n"
+    Set-Content -Path $stateFile -Value ($updated + $section)
+}
+
+function Write-StateRecord($tool, $version, $method, $configLocation, $surfaces) {
+    $entry = "| Item | Value |`n|------|-------|`n| Version | $version |`n| Installed via | $method |`n| Config location | ``$configLocation`` |`n| Surfaces supported | $surfaces |"
+    Write-StateSection $tool $entry
     Print-Info "Install recorded in docs\reference\my-setup.md"
 }
 
@@ -142,7 +259,7 @@ if ($global:MODEL_PROVIDER -eq "ollama") {
 }
 Write-Host ""
 
-Read-Host "Press Enter to continue"
+Press-EnterToContinue
 
 # ---------------------------------------------------------------------------
 # Step 1 — Chocolatey
@@ -185,9 +302,10 @@ Print-Info "Not sure what this is? Read: docs\concepts\what-is-ollama.md"
 Write-Host ""
 
 if (Ask-YesNo "Set up Ollama now?") {
+    $ollamaInstallMethod = "existing"
 
     if (Is-Installed "ollama") {
-        $ollamaVersion = (ollama --version 2>$null)
+        $ollamaVersion = Get-ToolVersion "ollama"
         Print-Success "Ollama is already installed  ($ollamaVersion)"
         Write-Host ""
 
@@ -199,10 +317,15 @@ if (Ask-YesNo "Set up Ollama now?") {
         if ($choice -eq 2) {
             if (Is-Installed "choco") {
                 choco upgrade ollama -y
+                $ollamaInstallMethod = "Chocolatey"
             } else {
                 Start-Process "https://ollama.com/download/windows"
                 Print-Info "Download and run the latest installer from the page that just opened."
-                Read-Host "Press Enter when done"
+                if (-not (Wait-ForCheck "Ollama" { Is-Installed "ollama" })) {
+                    Print-Info "Stopping here for now. Run .\scripts\setup.ps1 again when you're ready."
+                    exit 0
+                }
+                $ollamaInstallMethod = "manual installer"
             }
         }
     } else {
@@ -212,10 +335,15 @@ if (Ask-YesNo "Set up Ollama now?") {
         Print-Step "Installing Ollama..."
         if (Is-Installed "choco") {
             choco install ollama -y
+            $ollamaInstallMethod = "Chocolatey"
         } else {
             Start-Process "https://ollama.com/download/windows"
             Print-Info "Download and run the installer from the page that just opened."
-            Read-Host "Press Enter when the install is complete"
+            if (-not (Wait-ForCheck "Ollama" { Is-Installed "ollama" })) {
+                Print-Info "Stopping here for now. Run .\scripts\setup.ps1 again when you're ready."
+                exit 0
+            }
+            $ollamaInstallMethod = "manual installer"
         }
         Print-Success "Ollama installed."
     }
@@ -240,7 +368,7 @@ if (Ask-YesNo "Set up Ollama now?") {
         }
     }
 
-    Write-StateRecord "Ollama" (ollama --version 2>$null) "Chocolatey / installer" "$env:USERPROFILE\.ollama\" "No-code, CLI, IDE"
+    Write-StateRecord "Ollama" (Get-ToolVersion "ollama") $ollamaInstallMethod "$env:USERPROFILE\.ollama\" "No-code, CLI, IDE"
 }
 
 # ---------------------------------------------------------------------------
@@ -259,98 +387,206 @@ Write-Host ""
 
 # Dyad
 if (Ask-YesNo "Set up Dyad (no-code surface)?") {
-    Print-Header "Installing Dyad"
-
-    if (Is-Installed "choco") {
-        choco install dyad -y
-        Print-Success "Dyad installed."
+    if (-not (Is-Installed "ollama")) {
+        Print-Warn "Dyad setup needs Ollama first."
+        Print-Info "Install Ollama in Step 2, then run this script again so Dyad can use your local model."
     } else {
-        Start-Process "https://dyad.sh"
-        Print-Info "Download and run the Dyad installer from the page that just opened."
-        Read-Host "Press Enter when the install is complete"
+        Print-Header "Installing Dyad"
+        $dyadInstallMethod = "existing"
+
+        if (Test-DyadInstalled) {
+            Print-Success "Dyad is already installed."
+        } elseif (Is-Installed "choco") {
+            choco install dyad -y
+            Print-Success "Dyad installed."
+            $dyadInstallMethod = "Chocolatey"
+        } else {
+            Start-Process "https://dyad.sh"
+            Print-Info "Download and run the Dyad installer from the page that just opened."
+            if (-not (Wait-ForCheck "Dyad" { Test-DyadInstalled })) {
+                Print-Info "Stopping here for now. Run .\scripts\setup.ps1 again when you're ready."
+                exit 0
+            }
+            $dyadInstallMethod = "manual installer"
+        }
+
+        Write-Host ""
+        Print-Info "When you open Dyad for the first time:"
+        Print-Info "  1. Select Ollama as the provider"
+        Print-Info "  2. Set the model to $global:LOCAL_MODEL"
+        Print-Info "  3. Click Save"
+
+        Write-StateRecord "Dyad" "installed" $dyadInstallMethod "$env:APPDATA\Dyad\" "No-code"
     }
-
-    Write-Host ""
-    Print-Info "When you open Dyad for the first time:"
-    Print-Info "  1. Select Ollama as the provider"
-    Print-Info "  2. Set the model to $global:LOCAL_MODEL"
-    Print-Info "  3. Click Save"
-
-    Write-StateRecord "Dyad" "installed" "Chocolatey / installer" "$env:APPDATA\Dyad\" "No-code"
 }
 
 # OpenCode
 if (Ask-YesNo "Set up OpenCode (CLI surface)?") {
-    Print-Header "Installing OpenCode"
-
-    if (Is-Installed "opencode")) {
-        Print-Success "OpenCode is already installed."
-    } elseif (Is-Installed "choco") {
-        choco install opencode -y
-        Print-Success "OpenCode installed."
+    if (-not (Is-Installed "ollama")) {
+        Print-Warn "OpenCode setup needs Ollama first."
+        Print-Info "Install Ollama in Step 2, then run this script again so OpenCode can use your local model."
     } else {
-        Start-Process "https://opencode.ai"
-        Print-Info "Download OpenCode from the page that just opened."
-        Read-Host "Press Enter when the install is complete"
+        Print-Header "Installing OpenCode"
+        $opencodeInstallMethod = "existing"
+        $opencodeConfigStatus = "Existing OpenCode config left unchanged."
+
+        if (Is-Installed "opencode") {
+            Print-Success "OpenCode is already installed."
+        } elseif (Is-Installed "choco") {
+            choco install opencode -y
+            Print-Success "OpenCode installed."
+            $opencodeInstallMethod = "Chocolatey"
+        } else {
+            Start-Process "https://opencode.ai"
+            Print-Info "Download OpenCode from the page that just opened."
+            if (-not (Wait-ForCheck "OpenCode" { Is-Installed "opencode" })) {
+                Print-Info "Stopping here for now. Run .\scripts\setup.ps1 again when you're ready."
+                exit 0
+            }
+            $opencodeInstallMethod = "manual installer"
+        }
+
+        $opencodeConfigDir = "$env:APPDATA\opencode"
+        $opencodeConfigPath = "$opencodeConfigDir\config.json"
+        New-Item -ItemType Directory -Path $opencodeConfigDir -Force | Out-Null
+
+        if (Test-Path $opencodeConfigPath) {
+            Print-Info "An OpenCode config already exists at $opencodeConfigPath"
+            $choice = Ask-Choice "What would you like to do with the existing config?" @(
+                "Keep the existing config unchanged",
+                "Replace it with the default Ollama config for this repo"
+            )
+
+            if ($choice -eq 2) {
+                Backup-FileIfExists $opencodeConfigPath "OpenCode config"
+                $opencodeConfig = @{
+                    provider = "ollama"
+                    model = $global:LOCAL_MODEL
+                } | ConvertTo-Json
+                Set-Content -Path $opencodeConfigPath -Value $opencodeConfig
+                Print-Success "OpenCode configured to use $global:LOCAL_MODEL via Ollama."
+                $opencodeConfigStatus = "OpenCode is configured to use $global:LOCAL_MODEL via Ollama."
+            }
+        } else {
+            $opencodeConfig = @{
+                provider = "ollama"
+                model = $global:LOCAL_MODEL
+            } | ConvertTo-Json
+            Set-Content -Path $opencodeConfigPath -Value $opencodeConfig
+            Print-Success "OpenCode configured to use $global:LOCAL_MODEL via Ollama."
+            $opencodeConfigStatus = "OpenCode is configured to use $global:LOCAL_MODEL via Ollama."
+        }
+
+        Print-Info $opencodeConfigStatus
+        Write-StateRecord "OpenCode" "installed" $opencodeInstallMethod "$env:APPDATA\opencode\" "CLI"
     }
-
-    # Write config
-    $opencodeConfigDir = "$env:APPDATA\opencode"
-    New-Item -ItemType Directory -Path $opencodeConfigDir -Force | Out-Null
-    $opencodeConfig = @{
-        provider = "ollama"
-        model = $global:LOCAL_MODEL
-    } | ConvertTo-Json
-    Set-Content -Path "$opencodeConfigDir\config.json" -Value $opencodeConfig
-    Print-Success "OpenCode configured to use $global:LOCAL_MODEL via Ollama."
-
-    Write-StateRecord "OpenCode" "installed" "Chocolatey / installer" "$env:APPDATA\opencode\" "CLI"
 }
 
 # VS Code
 if (Ask-YesNo "Set up VS Code (IDE surface)?") {
-    Print-Header "Installing VS Code"
-
-    if (Is-Installed "code") {
-        $codeVersion = (code --version 2>$null | Select-Object -First 1)
-        Print-Success "VS Code is already installed  ($codeVersion)"
-    } elseif (Is-Installed "choco") {
-        choco install vscode -y
-        # Refresh PATH
-        $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
-        Print-Success "VS Code installed."
+    if (-not (Is-Installed "ollama")) {
+        Print-Warn "VS Code AI setup needs Ollama first."
+        Print-Info "Install Ollama in Step 2, then run this script again so Continue can use your local model."
     } else {
-        Start-Process "https://code.visualstudio.com/download"
-        Print-Info "Download VS Code from the page that just opened."
-        Print-Info "During install, check 'Add to PATH' when prompted."
-        Read-Host "Press Enter when the install is complete. Then close and reopen PowerShell."
+        Print-Header "Installing VS Code"
+        $vsCodeInstallMethod = "existing"
+        $continueExtensionStatus = "Continue extension still needs to be installed."
+        $continueConfigStatus = "Continue config left unchanged."
+
+        if (Test-VSCodeInstalled) {
+            $codeVersion = Get-ToolVersion "code"
+            if ($codeVersion) {
+                Print-Success "VS Code is already installed  ($codeVersion)"
+            } else {
+                Print-Success "VS Code is already installed."
+            }
+        } elseif (Is-Installed "choco") {
+            choco install vscode -y
+            $env:Path = [System.Environment]::GetEnvironmentVariable("Path", "Machine") + ";" + [System.Environment]::GetEnvironmentVariable("Path", "User")
+            Print-Success "VS Code installed."
+            $vsCodeInstallMethod = "Chocolatey"
+        } else {
+            Start-Process "https://code.visualstudio.com/download"
+            Print-Info "Download VS Code from the page that just opened."
+            Print-Info "During install, check 'Add to PATH' when prompted."
+            if (-not (Wait-ForCheck "VS Code" { Test-VSCodeInstalled })) {
+                Print-Info "Stopping here for now. Run .\scripts\setup.ps1 again when you're ready."
+                exit 0
+            }
+            $vsCodeInstallMethod = "manual installer"
+        }
+
+        if (Is-Installed "code") {
+            Print-Step "Installing the Continue extension..."
+            code --install-extension continue.continue --force
+            Print-Success "Continue extension installed."
+            $continueExtensionStatus = "Continue extension is installed."
+
+            $continueConfigDir = "$env:USERPROFILE\.continue"
+            $continueConfigPath = "$continueConfigDir\config.json"
+            New-Item -ItemType Directory -Path $continueConfigDir -Force | Out-Null
+
+            if (Test-Path $continueConfigPath) {
+                Print-Info "A Continue config already exists at $continueConfigPath"
+                $choice = Ask-Choice "What would you like to do with the existing config?" @(
+                    "Keep the existing config unchanged",
+                    "Replace it with the default Ollama config for this repo"
+                )
+
+                if ($choice -eq 2) {
+                    Backup-FileIfExists $continueConfigPath "Continue config"
+                    $continueConfig = @{
+                        models = @(@{
+                            title = "$($global:LOCAL_MODEL) (local)"
+                            provider = "ollama"
+                            model = $global:LOCAL_MODEL
+                        })
+                        tabAutocompleteModel = @{
+                            title = "$($global:LOCAL_MODEL) (local)"
+                            provider = "ollama"
+                            model = $global:LOCAL_MODEL
+                        }
+                    } | ConvertTo-Json -Depth 5
+                    Set-Content -Path $continueConfigPath -Value $continueConfig
+                    Print-Success "Continue configured to use $global:LOCAL_MODEL via Ollama."
+                    $continueConfigStatus = "Continue is configured to use $global:LOCAL_MODEL via Ollama."
+                }
+            } else {
+                $continueConfig = @{
+                    models = @(@{
+                        title = "$($global:LOCAL_MODEL) (local)"
+                        provider = "ollama"
+                        model = $global:LOCAL_MODEL
+                    })
+                    tabAutocompleteModel = @{
+                        title = "$($global:LOCAL_MODEL) (local)"
+                        provider = "ollama"
+                        model = $global:LOCAL_MODEL
+                    }
+                } | ConvertTo-Json -Depth 5
+                Set-Content -Path $continueConfigPath -Value $continueConfig
+                Print-Success "Continue configured to use $global:LOCAL_MODEL via Ollama."
+                $continueConfigStatus = "Continue is configured to use $global:LOCAL_MODEL via Ollama."
+            }
+        } else {
+            Print-Warn "VS Code is installed, but the 'code' command is not available yet."
+            Print-Info "Restart PowerShell after installation. If it still isn't available:"
+            Print-Info "  1. Open VS Code"
+            Print-Info "  2. Open the Command Palette"
+            Print-Info "  3. Search for: Shell Command: Install 'code' command in PATH"
+            Print-Info "  4. Reopen PowerShell"
+            Print-Info "Then install the Continue extension manually:"
+            Print-Info "  Open VS Code > Extensions (Ctrl+Shift+X) > search 'Continue' > Install"
+        }
+
+        Print-Info $continueExtensionStatus
+        Print-Info $continueConfigStatus
+        $vsCodeRecordedVersion = Get-ToolVersion "code"
+        if (-not $vsCodeRecordedVersion) {
+            $vsCodeRecordedVersion = "installed"
+        }
+        Write-StateRecord "VS Code" $vsCodeRecordedVersion $vsCodeInstallMethod "$env:APPDATA\Code\User\settings.json" "IDE"
     }
-
-    # Install Continue extension
-    if (Is-Installed "code") {
-        Print-Step "Installing the Continue extension..."
-        code --install-extension continue.continue --force
-        Print-Success "Continue extension installed."
-
-        # Configure Continue
-        $continueConfigDir = "$env:USERPROFILE\.continue"
-        New-Item -ItemType Directory -Path $continueConfigDir -Force | Out-Null
-        $continueConfig = @{
-            models = @(@{
-                title = "$($global:LOCAL_MODEL) (local)"
-                provider = "ollama"
-                model = $global:LOCAL_MODEL
-            })
-        } | ConvertTo-Json -Depth 5
-        Set-Content -Path "$continueConfigDir\config.json" -Value $continueConfig
-        Print-Success "Continue configured to use $global:LOCAL_MODEL via Ollama."
-    } else {
-        Print-Warn "VS Code 'code' command not available yet."
-        Print-Info "After restarting PowerShell, install the Continue extension manually:"
-        Print-Info "  Open VS Code > Extensions (Ctrl+Shift+X) > search 'Continue' > Install"
-    }
-
-    Write-StateRecord "VS Code" (code --version 2>$null | Select-Object -First 1) "Chocolatey / installer" "$env:APPDATA\Code\User\settings.json" "IDE"
 }
 
 # ---------------------------------------------------------------------------

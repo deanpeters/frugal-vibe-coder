@@ -4,6 +4,17 @@ A quick reference for every tool in this repo — what it is, what surface it su
 
 ---
 
+## Fastest setup path
+
+If you want the repo to guide you instead of installing each tool by hand:
+
+- macOS / Linux: `./scripts/setup.sh`
+- Windows: `.\scripts\setup.ps1`
+
+Those scripts walk you through package manager setup, Ollama, and whichever learning surfaces you choose.
+
+---
+
 ## Core tools
 
 | Tool | What it is | Surface | Cost | Platform |

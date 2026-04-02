@@ -47,7 +47,13 @@ if ! is_installed ollama; then
     print_info "VS Code's AI features need Ollama to work locally."
     print_info "Install Ollama first: ./scripts/install-ollama.sh"
     print_blank
-    if ! ask "Ollama is missing. Continue anyway?"; then
+    if ask "Install Ollama now before continuing?"; then
+        bash "$SCRIPT_DIR/install-ollama.sh"
+    fi
+
+    if ! is_installed ollama; then
+        print_info "Stopping here so you don't end up with a half-configured setup."
+        print_info "Run ./scripts/install-vscode.sh again after Ollama is installed."
         exit 0
     fi
 fi
@@ -60,6 +66,14 @@ print_blank
 
 OS=$(detect_os)
 VSCODE_VERSION=$(get_tool_version code)
+INSTALL_METHOD="existing"
+CONTINUE_STATUS="Continue config left unchanged."
+EXTENSION_STATUS="Continue extension still needs to be installed."
+CONTINUE_STATE_CONTENT="| Item | Value |
+|------|-------|
+| Extension ID | continue.continue |
+| Config location | \`$HOME/.continue/config.json\` |
+| Status | Existing config left unchanged |"
 
 if [ -n "$VSCODE_VERSION" ]; then
     print_success "VS Code is already installed  ($VSCODE_VERSION)"
@@ -79,14 +93,17 @@ if [ -n "$VSCODE_VERSION" ]; then
                 macos)
                     if command -v brew &>/dev/null; then
                         brew upgrade --cask visual-studio-code
+                        INSTALL_METHOD="Homebrew Cask"
                     else
                         open -a "Visual Studio Code" 2>/dev/null
                         print_info "Go to Help > Check for Updates in VS Code."
                         press_enter_to_continue
+                        INSTALL_METHOD="existing"
                     fi
                     ;;
                 debian)
                     sudo apt install --only-upgrade -y code
+                    INSTALL_METHOD="apt"
                     ;;
             esac
             print_success "VS Code updated."
@@ -114,13 +131,18 @@ else
             if command -v brew &>/dev/null; then
                 print_info "Using Homebrew..."
                 brew install --cask visual-studio-code
+                INSTALL_METHOD="Homebrew Cask"
             else
                 print_info "Opening the VS Code download page..."
                 open "https://code.visualstudio.com/download" 2>/dev/null || \
                     print_info "Visit https://code.visualstudio.com/download to download VS Code."
                 print_blank
                 print_info "Download the .dmg, open it, and drag VS Code to your Applications folder."
-                press_enter_to_continue
+                if ! wait_for_path_install "/Applications/Visual Studio Code.app" "VS Code"; then
+                    print_info "Stopping here for now. Run ./scripts/install-vscode.sh again when you're ready."
+                    exit 0
+                fi
+                INSTALL_METHOD="manual download"
             fi
             ;;
         debian)
@@ -130,6 +152,7 @@ else
             sudo add-apt-repository "deb [arch=amd64] https://packages.microsoft.com/repos/vscode stable main"
             sudo apt update -q
             sudo apt install -y code
+            INSTALL_METHOD="apt"
             ;;
         *)
             print_error "Unsupported platform. Visit https://code.visualstudio.com to download VS Code."
@@ -178,6 +201,7 @@ if command -v code &>/dev/null; then
 
     if code --list-extensions 2>/dev/null | grep -q "continue.continue"; then
         print_success "Continue extension installed."
+        EXTENSION_STATUS="Continue extension is installed."
     else
         print_warn "Could not confirm Continue was installed."
         print_info "Install it manually: open VS Code, go to Extensions (Cmd+Shift+X),"
@@ -209,6 +233,7 @@ if [ -f "$CONTINUE_CONFIG" ]; then
         "Replace it with the default Ollama config for this repo")
 
     if [ "$choice" = "2" ]; then
+        backup_file_if_exists "$CONTINUE_CONFIG" "Continue config"
         cat > "$CONTINUE_CONFIG" << EOF
 {
   "models": [
@@ -226,6 +251,13 @@ if [ -f "$CONTINUE_CONFIG" ]; then
 }
 EOF
         print_success "Continue config updated."
+        CONTINUE_STATUS="Continue is configured to use ${LOCAL_MODEL} via Ollama."
+        CONTINUE_STATE_CONTENT="| Item | Value |
+|------|-------|
+| Extension ID | continue.continue |
+| Config location | \`$CONTINUE_CONFIG\` |
+| Provider | ollama |
+| Model | ${LOCAL_MODEL} |"
     fi
 else
     cat > "$CONTINUE_CONFIG" << EOF
@@ -245,6 +277,13 @@ else
 }
 EOF
     print_success "Continue config created at $CONTINUE_CONFIG"
+    CONTINUE_STATUS="Continue is configured to use ${LOCAL_MODEL} via Ollama."
+    CONTINUE_STATE_CONTENT="| Item | Value |
+|------|-------|
+| Extension ID | continue.continue |
+| Config location | \`$CONTINUE_CONFIG\` |
+| Provider | ollama |
+| Model | ${LOCAL_MODEL} |"
 fi
 
 # ---------------------------------------------------------------------------
@@ -261,25 +300,20 @@ VSCODE_VERSION=$(get_tool_version code || echo "installed")
 record_install \
     "VS Code" \
     "$VSCODE_VERSION" \
-    "$(command -v brew &>/dev/null && echo "Homebrew Cask" || echo "manual")" \
+    "$INSTALL_METHOD" \
     "$VSCODE_CONFIG" \
     "IDE"
 
-write_state_section "Continue (VS Code extension)" \
-"| Item | Value |
-|------|-------|
-| Extension ID | continue.continue |
-| Config location | \`$CONTINUE_CONFIG\` |
-| Provider | ollama |
-| Model | ${LOCAL_MODEL} |"
+write_state_section "Continue (VS Code extension)" "$CONTINUE_STATE_CONTENT"
 
 # ---------------------------------------------------------------------------
 # Summary
 # ---------------------------------------------------------------------------
 print_header "VS Code is ready"
 
-print_success "VS Code is installed with the Continue extension."
-print_success "Continue is configured to use ${LOCAL_MODEL} via Ollama."
+print_success "VS Code is installed."
+print_info "$EXTENSION_STATUS"
+print_info "$CONTINUE_STATUS"
 print_blank
 print_info "To get started:"
 print_info "  1. Open VS Code"

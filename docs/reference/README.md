@@ -22,4 +22,6 @@ It is gitignored and never committed. It lives only on your machine.
 
 If it doesn't exist yet, it means you haven't run any of the install scripts. Follow the [setup guides](../setup/README.md) to get started — they will create it automatically.
 
+If you rerun setup later, the scripts update the relevant sections instead of stacking duplicate sections on top of each other.
+
 If you want to see what the file will look like when it's populated, see [my-setup.template.md](my-setup.template.md).

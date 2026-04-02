@@ -47,7 +47,13 @@ if ! is_installed ollama; then
     print_info "Dyad needs Ollama to run AI features locally."
     print_info "Install Ollama first: ./scripts/install-ollama.sh"
     print_blank
-    if ! ask "Ollama is missing. Continue anyway?"; then
+    if ask "Install Ollama now before continuing?"; then
+        bash "$SCRIPT_DIR/install-ollama.sh"
+    fi
+
+    if ! is_installed ollama; then
+        print_info "Stopping here so you don't end up with a half-configured setup."
+        print_info "Run ./scripts/install-dyad.sh again after Ollama is installed."
         exit 0
     fi
 fi
@@ -59,6 +65,7 @@ print_step "Checking your current setup..."
 print_blank
 
 OS=$(detect_os)
+INSTALL_METHOD="existing"
 
 if is_installed dyad; then
     DYAD_VERSION=$(get_tool_version dyad)
@@ -82,6 +89,7 @@ if is_installed dyad; then
             esac
             print_info "Check the Dyad interface for update notifications."
             press_enter_to_continue
+            INSTALL_METHOD="existing"
             ;;
         3)
             print_info "Exiting. No changes made."
@@ -106,13 +114,18 @@ else
             if command -v brew &>/dev/null; then
                 print_info "Using Homebrew..."
                 brew install --cask dyad
+                INSTALL_METHOD="Homebrew Cask"
             else
                 print_info "Homebrew not found — opening the Dyad download page..."
                 open "https://dyad.sh" 2>/dev/null || \
                     print_info "Visit https://dyad.sh to download Dyad manually."
                 print_blank
                 print_info "Download the .dmg file, open it, and drag Dyad to your Applications folder."
-                press_enter_to_continue
+                if ! wait_for_path_install "/Applications/Dyad.app" "Dyad"; then
+                    print_info "Stopping here for now. Run ./scripts/install-dyad.sh again when you're ready."
+                    exit 0
+                fi
+                INSTALL_METHOD="manual download"
             fi
             ;;
         debian)
@@ -122,7 +135,11 @@ else
             print_blank
             print_info "Download the .deb file and install it with:"
             print_info "  sudo apt install ./dyad-*.deb"
-            press_enter_to_continue
+            if ! wait_for_tool_install dyad "Dyad"; then
+                print_info "Stopping here for now. Run ./scripts/install-dyad.sh again when you're ready."
+                exit 0
+            fi
+            INSTALL_METHOD="manual download"
             ;;
         *)
             print_error "Unsupported platform. Visit https://dyad.sh to download Dyad."
@@ -171,7 +188,7 @@ esac
 record_install \
     "Dyad" \
     "$(get_tool_version dyad || echo "installed")" \
-    "$(command -v brew &>/dev/null && echo "Homebrew Cask" || echo "manual")" \
+    "$INSTALL_METHOD" \
     "$CONFIG_LOC" \
     "No-code"
 

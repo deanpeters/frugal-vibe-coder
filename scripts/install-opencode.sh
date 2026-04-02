@@ -46,7 +46,13 @@ if ! is_installed ollama; then
     print_info "OpenCode needs Ollama to run AI features locally."
     print_info "Install Ollama first: ./scripts/install-ollama.sh"
     print_blank
-    if ! ask "Ollama is missing. Continue anyway?"; then
+    if ask "Install Ollama now before continuing?"; then
+        bash "$SCRIPT_DIR/install-ollama.sh"
+    fi
+
+    if ! is_installed ollama; then
+        print_info "Stopping here so you don't end up with a half-configured setup."
+        print_info "Run ./scripts/install-opencode.sh again after Ollama is installed."
         exit 0
     fi
 fi
@@ -58,6 +64,8 @@ print_step "Checking your current setup..."
 print_blank
 
 OS=$(detect_os)
+INSTALL_METHOD="existing"
+CONFIG_STATUS="Existing OpenCode config left unchanged."
 
 OPENCODE_VERSION=$(get_tool_version opencode)
 
@@ -80,12 +88,15 @@ if [ -n "$OPENCODE_VERSION" ]; then
                 macos)
                     if command -v brew &>/dev/null; then
                         brew upgrade opencode
+                        INSTALL_METHOD="Homebrew"
                     else
                         curl -fsSL https://opencode.ai/install | sh
+                        INSTALL_METHOD="install.sh"
                     fi
                     ;;
                 debian)
                     curl -fsSL https://opencode.ai/install | sh
+                    INSTALL_METHOD="install.sh"
                     ;;
             esac
             print_success "OpenCode updated."
@@ -113,14 +124,17 @@ else
             if command -v brew &>/dev/null; then
                 print_info "Using Homebrew..."
                 brew install opencode
+                INSTALL_METHOD="Homebrew"
             else
                 print_info "Installing from opencode.ai..."
                 curl -fsSL https://opencode.ai/install | sh
+                INSTALL_METHOD="install.sh"
             fi
             ;;
         debian)
             print_info "Installing from opencode.ai..."
             curl -fsSL https://opencode.ai/install | sh
+            INSTALL_METHOD="install.sh"
             ;;
         *)
             print_error "Unsupported platform. Visit https://opencode.ai for instructions."
@@ -164,6 +178,7 @@ if [ -f "$OPENCODE_CONFIG" ]; then
         2)
             print_step "Updating config..."
             mkdir -p "$OPENCODE_CONFIG_DIR"
+            backup_file_if_exists "$OPENCODE_CONFIG" "OpenCode config"
             cat > "$OPENCODE_CONFIG" << EOF
 {
   "provider": "ollama",
@@ -171,6 +186,7 @@ if [ -f "$OPENCODE_CONFIG" ]; then
 }
 EOF
             print_success "Config updated."
+            CONFIG_STATUS="OpenCode is configured to use ${LOCAL_MODEL} via Ollama."
             ;;
     esac
 else
@@ -183,6 +199,7 @@ else
 }
 EOF
     print_success "Config created at $OPENCODE_CONFIG"
+    CONFIG_STATUS="OpenCode is configured to use ${LOCAL_MODEL} via Ollama."
 fi
 
 # ---------------------------------------------------------------------------
@@ -207,7 +224,7 @@ OPENCODE_VERSION=$(get_tool_version opencode || echo "installed")
 record_install \
     "OpenCode" \
     "$OPENCODE_VERSION" \
-    "$(command -v brew &>/dev/null && echo "Homebrew" || echo "install.sh")" \
+    "$INSTALL_METHOD" \
     "$OPENCODE_CONFIG_DIR/" \
     "CLI"
 
@@ -216,7 +233,8 @@ record_install \
 # ---------------------------------------------------------------------------
 print_header "OpenCode is ready"
 
-print_success "OpenCode is installed and configured to use ${LOCAL_MODEL} via Ollama."
+print_success "OpenCode is installed."
+print_info "$CONFIG_STATUS"
 print_blank
 print_info "To start a session:"
 print_info "  1. Open your terminal"

@@ -1,27 +1,18 @@
 # my-setup.template.md
 
-This file shows what `my-setup.md` looks like once the install scripts have run. The actual `my-setup.md` is local to your machine and never committed to git.
+This file shows what `my-setup.md` can look like once the install scripts have run. The actual `my-setup.md` is local to your machine and never committed to git.
 
 If you're looking for your personal install log, it's at `docs/reference/my-setup.md` in your local copy of this repo.
 
 ---
 
----
-*Below is an example of what a fully populated my-setup.md looks like.*
+*Below is an example of what a populated `my-setup.md` can look like. The exact sections depend on which setup scripts you ran and which choices you made.*
 
 ---
 
 # My Setup
 
 *Generated and updated by frugal-vibe-coder install scripts. Last updated: [date]*
-
----
-
-## Package manager
-
-| Tool | Version | Platform | Installed via |
-|------|---------|---------|--------------|
-| Homebrew | 4.x.x | macOS | Manual install |
 
 ---
 
@@ -32,28 +23,16 @@ If you're looking for your personal install log, it's at `docs/reference/my-setu
 | Version | 0.x.x |
 | Installed via | Homebrew |
 | Config location | `~/.ollama/` |
-| Models location | `~/.ollama/models/` |
-
-### Downloaded models
-
-| Model | Size | Purpose |
-|-------|------|---------|
-| qwen3:8b | ~5 GB | General use — default for all surfaces |
-
----
+| Surfaces supported | No-code (Dyad), CLI (OpenCode), IDE (VS Code) |
 
 ## Dyad
 
 | Item | Value |
 |------|-------|
-| Version | x.x.x |
-| Installed via | Homebrew Cask |
-| App location | `/Applications/Dyad.app` |
+| Version | installed |
+| Installed via | manual download |
 | Config location | `~/Library/Application Support/Dyad/` |
-| Surface | No-code |
-| Model | qwen3:8b via Ollama |
-
----
+| Surfaces supported | No-code |
 
 ## OpenCode
 
@@ -62,10 +41,7 @@ If you're looking for your personal install log, it's at `docs/reference/my-setu
 | Version | x.x.x |
 | Installed via | Homebrew |
 | Config location | `~/.config/opencode/` |
-| Surface | CLI |
-| Model | qwen3:8b via Ollama |
-
----
+| Surfaces supported | CLI |
 
 ## VS Code
 
@@ -73,43 +49,34 @@ If you're looking for your personal install log, it's at `docs/reference/my-setu
 |------|-------|
 | Version | x.x.x |
 | Installed via | Homebrew Cask |
-| App location | `/Applications/Visual Studio Code.app` |
-| User settings | `~/Library/Application Support/Code/User/settings.json` |
-| Extensions location | `~/.vscode/extensions/` |
-| Surface | IDE |
+| Config location | `~/Library/Application Support/Code/User/settings.json` |
+| Surfaces supported | IDE |
 
-### Installed extensions
+## Continue (VS Code extension)
 
-| Extension | Purpose |
-|-----------|---------|
-| Continue | AI assistant — connected to qwen3:8b via Ollama |
-
----
-
-## Model configuration
-
-| Setting | Value |
-|---------|-------|
-| Config file | `frugal-vibe.conf` in repo root |
-| MODEL_PROVIDER | ollama |
-| LOCAL_MODEL | qwen3:8b |
-| PAID_MODEL | claude-haiku-4-5 (not active — requires ANTHROPIC_API_KEY in shell environment) |
+| Item | Value |
+|------|-------|
+| Extension ID | continue.continue |
+| Config location | `~/.continue/config.json` |
+| Provider | ollama |
+| Model | qwen3:8b |
 
 ---
 
-## API keys
+Sometimes a script run may keep your existing Continue config unchanged instead of replacing it. In that case, the section could look like this instead:
 
-API keys are not stored here. They live in your shell environment (`~/.zshrc` on macOS/Linux, Windows Environment Variables).
+## Continue (VS Code extension)
 
-To check whether a key is set, run:
-
-```bash
-echo $ANTHROPIC_API_KEY     # should print your key, or nothing if not set
-echo $OPENAI_API_KEY
-```
+| Item | Value |
+|------|-------|
+| Extension ID | continue.continue |
+| Config location | `~/.continue/config.json` |
+| Status | Existing config left unchanged |
 
 ---
 
-## Notes
+Notes about how the current scripts behave:
 
-*Add any personal notes about your setup here — things that were different from the default, decisions you made, or issues you ran into and resolved.*
+- Existing configs are left alone unless you choose to replace them.
+- If you choose replace, the scripts create a timestamped backup first.
+- Rerunning setup updates the matching section instead of adding duplicate sections.
