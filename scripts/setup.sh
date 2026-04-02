@@ -269,50 +269,46 @@ if [ "$NEXT_STEP" = "paid_models" ]; then
 
     print_info "Your setup is complete and fully functional using free local models."
     print_blank
-    print_info "If you'd like to optionally add a paid model (Anthropic or OpenAI),"
+    print_info "If you'd like to optionally add paid model access (Anthropic and/or OpenAI),"
     print_info "you can do that now or at any time by editing frugal-vibe.conf."
     print_blank
     print_info "Paid models are never required. Start with what you have."
     print_blank
+    print_info "You can set up either or both API keys now."
+    print_info "frugal-vibe.conf still chooses one active provider at a time."
+    print_blank
 
-    if ask "Set up a paid model API key now?"; then
+    if ask "Set up paid model API keys now?"; then
         print_blank
-        choice=$(ask_choice "Which provider?" \
-            "Anthropic  (claude-haiku-4-5 — cheapest default)" \
-            "OpenAI     (gpt-4o-mini — cheapest default)" \
-            "Skip — I'll do this later")
+        if ask "Show Anthropic setup steps?  (claude-haiku-4-5 — cheapest default)"; then
+            print_blank
+            print_info "To add your Anthropic API key:"
+            print_blank
+            print_info "  1. Get a key at: https://console.anthropic.com"
+            print_info "  2. Add this line to your ~/.zshrc or ~/.bashrc:"
+            print_info "       export ANTHROPIC_API_KEY=your-key-here"
+            print_info "  3. Run:  source ~/.zshrc"
+            print_info "  4. Edit frugal-vibe.conf and set:"
+            print_info "       MODEL_PROVIDER=anthropic"
+            print_blank
+            print_info "Your key stays in your shell environment — never in any file in this repo."
+            print_blank
+        fi
 
-        case "$choice" in
-            1)
-                print_blank
-                print_info "To add your Anthropic API key:"
-                print_blank
-                print_info "  1. Get a key at: https://console.anthropic.com"
-                print_info "  2. Add this line to your ~/.zshrc or ~/.bashrc:"
-                print_info "       export ANTHROPIC_API_KEY=your-key-here"
-                print_info "  3. Run:  source ~/.zshrc"
-                print_info "  4. Edit frugal-vibe.conf and set:"
-                print_info "       MODEL_PROVIDER=anthropic"
-                print_blank
-                print_info "Your key stays in your shell environment — never in any file in this repo."
-                ;;
-            2)
-                print_blank
-                print_info "To add your OpenAI API key:"
-                print_blank
-                print_info "  1. Get a key at: https://platform.openai.com/api-keys"
-                print_info "  2. Add this line to your ~/.zshrc or ~/.bashrc:"
-                print_info "       export OPENAI_API_KEY=your-key-here"
-                print_info "  3. Run:  source ~/.zshrc"
-                print_info "  4. Edit frugal-vibe.conf and set:"
-                print_info "       MODEL_PROVIDER=openai"
-                print_blank
-                print_info "Your key stays in your shell environment — never in any file in this repo."
-                ;;
-            3)
-                print_info "No problem — your local Ollama setup is complete and ready to use."
-                ;;
-        esac
+        if ask "Show OpenAI setup steps?  (gpt-4o-mini — cheapest default)"; then
+            print_blank
+            print_info "To add your OpenAI API key:"
+            print_blank
+            print_info "  1. Get a key at: https://platform.openai.com/api-keys"
+            print_info "  2. Add this line to your ~/.zshrc or ~/.bashrc:"
+            print_info "       export OPENAI_API_KEY=your-key-here"
+            print_info "  3. Run:  source ~/.zshrc"
+            print_info "  4. Edit frugal-vibe.conf and set:"
+            print_info "       MODEL_PROVIDER=openai"
+            print_blank
+            print_info "Your key stays in your shell environment — never in any file in this repo."
+            print_blank
+        fi
     fi
 
     mark_setup_step_complete "paid_models" "package_manager"

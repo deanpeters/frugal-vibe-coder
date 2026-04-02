@@ -844,12 +844,41 @@ if ($nextStep -eq "paid_models") {
 
     Print-Info "Your setup is complete and fully functional using free local models."
     Print-Info ""
-    Print-Info "To add a paid model later, edit frugal-vibe.conf and set MODEL_PROVIDER."
-    Print-Info "Then add your API key as a Windows Environment Variable — never in a file."
+    Print-Info "You can optionally add paid model access for Anthropic and/or OpenAI now."
+    Print-Info "frugal-vibe.conf still chooses one active provider at a time."
     Print-Info ""
-    Print-Info "  System > Advanced system settings > Environment Variables"
-    Print-Info "  Add: ANTHROPIC_API_KEY or OPENAI_API_KEY"
+    Print-Info "Paid models are never required. Start with what you have."
     Print-Info ""
+    if (Ask-YesNo "Show paid model API key setup steps now?") {
+        Write-Host ""
+
+        if (Ask-YesNo "Show Anthropic setup steps?  (claude-haiku-4-5 - cheapest default)") {
+            Print-Info "To add your Anthropic API key on Windows:"
+            Print-Info ""
+            Print-Info "  1. Get a key at: https://console.anthropic.com"
+            Print-Info "  2. Open: System > Advanced system settings > Environment Variables"
+            Print-Info "  3. Add a new variable named: ANTHROPIC_API_KEY"
+            Print-Info "  4. Edit frugal-vibe.conf and set:"
+            Print-Info "       MODEL_PROVIDER=anthropic"
+            Print-Info ""
+            Print-Info "Your key belongs in Windows Environment Variables — never in a file."
+            Write-Host ""
+        }
+
+        if (Ask-YesNo "Show OpenAI setup steps?  (gpt-4o-mini - cheapest default)") {
+            Print-Info "To add your OpenAI API key on Windows:"
+            Print-Info ""
+            Print-Info "  1. Get a key at: https://platform.openai.com/api-keys"
+            Print-Info "  2. Open: System > Advanced system settings > Environment Variables"
+            Print-Info "  3. Add a new variable named: OPENAI_API_KEY"
+            Print-Info "  4. Edit frugal-vibe.conf and set:"
+            Print-Info "       MODEL_PROVIDER=openai"
+            Print-Info ""
+            Print-Info "Your key belongs in Windows Environment Variables — never in a file."
+            Write-Host ""
+        }
+    }
+
     Print-Info "Full instructions: docs\concepts\what-is-an-api-key.md"
 
     Mark-SetupStepComplete "paid_models" "package_manager"
