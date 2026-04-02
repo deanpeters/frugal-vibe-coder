@@ -17,13 +17,13 @@ detect_package_manager() {
 # Returns true when Homebrew manages the given formula.
 brew_has_formula() {
     local package="$1"
-    command -v brew &>/dev/null && brew list --formula "$package" &>/dev/null
+    command -v brew &>/dev/null && brew list --formula --versions "$package" &>/dev/null
 }
 
 # Returns true when Homebrew manages the given cask.
 brew_has_cask() {
     local package="$1"
-    command -v brew &>/dev/null && brew list --cask "$package" &>/dev/null
+    command -v brew &>/dev/null && brew list --cask --versions "$package" &>/dev/null
 }
 
 # Install a package using the available package manager.
