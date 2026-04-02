@@ -128,7 +128,7 @@ function Get-ToolVersion($command) {
             if (Is-Installed "opencode") { return "installed" }
         }
         "code" {
-            if (Is-Installed "code") { return (code --version 2>$null | Select-Object -First 1) }
+            if (Test-VSCodeInstalled) { return "installed" }
         }
     }
 

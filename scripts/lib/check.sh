@@ -19,8 +19,23 @@ get_tool_version() {
             command -v opencode &>/dev/null && echo "installed" || echo ""
             ;;
         code)
-            # VS Code — the 'code' CLI command
-            code --version 2>/dev/null | head -1
+            if command -v code &>/dev/null; then
+                echo "installed"
+            else
+                local os
+                os=$(detect_os)
+                case "$os" in
+                    macos)
+                        [ -d "/Applications/Visual Studio Code.app" ] && echo "installed" || echo ""
+                        ;;
+                    debian)
+                        echo ""
+                        ;;
+                    *)
+                        echo ""
+                        ;;
+                esac
+            fi
             ;;
         dyad)
             # Dyad is a desktop app — check by application path
