@@ -17,8 +17,8 @@
  ╚████╔╝ ██║██████╔╝███████╗    ╚██████╗╚██████╔╝██████╔╝███████╗██║  ██║    ║  
 ║ ╚═══╝  ╚═╝╚═════╝ ╚══════╝     ╚═════╝ ╚═════╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝    ║  
 ║                                                                            ║
-║   A learning platform for AI-assisted product building • Version 0.05.00   ║
-║   Dyad • OpenCode • VS Code • Ollama • Local-first • Budget-aware          ║
+║   A learning platform for AI-assisted product building • Version 0.07.00   ║
+║   Dyad • Open WebUI • AnythingLLM • LangFlow • OpenCode • VS Code          ║
 ║                                                                            ║
 ╚════════════════════════════════════════════════════════════════════════════╝
 ~~~
@@ -132,11 +132,16 @@ Problem → Choose a surface → Choose a model → Build → Learn → Iterate
 
 | Surface | Tools | Best for |
 |--------|-------|---------|
-| No-code | Dyad | First success, low friction, visual thinkers |
+| No-code | Dyad, Open WebUI, AnythingLLM | First success, low friction, visual thinkers |
 | CLI | OpenCode | Transparency, control, understanding what's happening |
 | IDE | VS Code | Code inspection, real iteration, long-term skills |
 
 These surfaces are independent. You can start with any one of them and move between them without losing your footing. Each connects back to the same foundational concepts.
+
+**No-code tools at a glance:**
+- **Dyad** — build apps from a description, no coding required
+- **Open WebUI** — a ChatGPT-style chat interface for your local Ollama model
+- **AnythingLLM** — upload documents and ask questions about them using local AI
 
 ---
 
@@ -215,10 +220,13 @@ If you want to deliberately retest the entire guided flow from Step 1, use `--fo
 ### Install tools individually
 
 ```bash
-./scripts/install-ollama.sh      # Ollama + default model
-./scripts/install-dyad.sh        # Dyad — no-code surface
-./scripts/install-opencode.sh    # OpenCode — CLI surface
-./scripts/install-vscode.sh      # VS Code + Continue — IDE surface
+./scripts/install-ollama.sh       # Ollama + default model
+./scripts/install-dyad.sh         # Dyad — no-code app builder
+./scripts/install-open-webui.sh   # Open WebUI — local chat interface
+./scripts/install-anythingllm.sh  # AnythingLLM — document Q&A
+./scripts/install-opencode.sh     # OpenCode — CLI surface
+./scripts/install-vscode.sh       # VS Code + Continue — IDE surface
+./scripts/install-langflow.sh     # LangFlow — visual AI pipeline builder
 ```
 
 Each script checks what you already have, explains every step, verifies manual installs before moving on, and records the result in `docs/reference/my-setup.md`.
@@ -270,18 +278,24 @@ The current three surfaces (no-code, CLI, IDE) are the foundation. The full expa
 | 3 | Instructor resources — workshops, setup checklists, troubleshooting |
 | 4 | Paid model onboarding — when, how, and how to stay in control of costs |
 | 5 | Prompts and templates — PM-oriented, copy-paste ready |
-| 6 | Future surfaces — n8n, Flowise, OpenClaw, OpenHands, SWE-agent |
+| 6 | Future surfaces — LangFlow (installer ready), Flowise, OpenClaw, OpenHands, SWE-agent |
 
-The repo is also considering broader support over time for other tools that fit the same access-first philosophy:
+The repo also supports or is actively considering these additional tools:
 
-- no-code / low-code: `bolt.diy`
+**Active (installer + docs available):**
+- no-code: `Dyad`, `Open WebUI`, `AnythingLLM`
+- CLI: `OpenCode`
+- IDE: `VS Code`
+- visual flow builder: `LangFlow` (installer ready, Phase 6 surface)
+
+**Under consideration:**
+- no-code: `bolt.diy`
 - CLI: `Goose`
-- IDE / editor: `VSCodium`
-- future visual agent-flow builders: `n8n`, `Flowise`
-- future autonomous agent platforms: `OpenClaw`, `OpenHands`
-- future coding agent frameworks: `SWE-agent`
+- IDE: `VSCodium`
+- future autonomous agents: `OpenClaw`, `OpenHands`
+- future coding agent framework: `SWE-agent`
 
-These are not all active or documented yet. They will be introduced only when they can be done in a way that fits the learning platform principles of this repo: low-cost, local-first where practical, beginner-respectful, and realistic on ordinary hardware.
+Tools are introduced only when they can be done in a way that fits the learning platform principles of this repo: low-cost, local-first where practical, beginner-respectful, and realistic on ordinary hardware.
 
 ---
 

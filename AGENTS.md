@@ -40,6 +40,8 @@ This project supports low-cost learning across three primary modes:
 Examples:
 - Dyad
 - bolt.diy
+- Open WebUI
+- AnythingLLM
 - other local-first or low-cost visual / prompt-based builders
 
 ### 2. CLI-based coding agents and workflows
@@ -302,6 +304,8 @@ Use for:
 Bias toward:
 - Dyad for low-touch local-first learning
 - bolt.diy for advanced hybrid workflows
+- Open WebUI for learners who want a familiar chat-first interface
+- AnythingLLM for document Q&A and RAG workflows
 - simple starter app scopes
 - local models where practical
 
@@ -701,10 +705,10 @@ The following surfaces and tool categories are on the roadmap but are not curren
 ### Visual agent-flow builders
 Tools that let learners build multi-step agent workflows visually, without writing code. Strong fit for the PM/designer audience.
 
-- **n8n** (self-hosted) — open-source workflow automation with a visual canvas; local install preferred
-- **Flowise** — open-source visual builder for LLM flows and agent chains; locally installable
+- **LangFlow** — open-source visual builder for LLM flows, RAG pipelines, and agent chains; installs via pip, no Docker required. Preferred choice.
+- **Flowise** — open-source alternative with similar capabilities; requires Node.js.
 
-Both align with the local-first, low-cost principles of this repo. When introduced, they should be framed as a fourth learning surface alongside no-code, CLI, and IDE — not as replacements.
+Both align with the local-first, low-cost principles of this repo. When introduced, they should be framed as a fourth learning surface alongside no-code, CLI, and IDE — not as replacements. LangFlow is preferred because it installs via pip without Docker, lowering the barrier for this audience.
 
 ### Autonomous agent platforms
 Platforms where an AI agent operates with greater independence, taking multi-step actions on the learner's behalf.

@@ -11,6 +11,14 @@ A forward-looking plan for frugal-vibe-coder. Phases are ordered by dependency �
 - `frugal-vibe.conf` — committed config file, fully commented
 - Core docs — `AGENTS.md`, `CLAUDE.md`, `README.md`
 
+**No-code surface additions (added after initial release):**
+- Open WebUI — chat interface for Ollama; `scripts/install-open-webui.sh`, `docs/setup/open-webui.md`
+- AnythingLLM — document Q&A and RAG; `scripts/install-anythingllm.sh`, `docs/setup/anythingllm.md`
+
+**New concept docs:**
+- `docs/concepts/what-is-rag.md`
+- `docs/concepts/what-is-a-flow-builder.md`
+
 ---
 
 ## Phase 2 — Sample Projects
@@ -123,10 +131,11 @@ Introduction of new learning surfaces as the learner's skills and confidence gro
 ### Surfaces and sequencing
 
 **Visual agent-flow builders** (earliest candidate for introduction)
-- n8n (self-hosted) and Flowise
+- LangFlow (preferred) and Flowise
 - Natural fit for this audience — visual, no-code, but more powerful than Dyad
 - Prerequisite: learner has completed at least one project on the no-code surface
-- Hardware note: n8n self-hosted requires Docker — this is the forcing function for introducing Docker as a concept
+- LangFlow installs via pip and does not require Docker — lower barrier than alternatives
+- Flowise requires Node.js; introduce as a secondary option for learners already comfortable with npm
 
 **Autonomous agent platforms** (after visual builders)
 - OpenClaw and OpenHands
@@ -146,12 +155,14 @@ Introduction of new learning surfaces as the learner's skills and confidence gro
 - Hardware requirements must be stated clearly upfront — some of these tools are more demanding
 
 ### Docker decision point
-Visual agent-flow builders (n8n in particular) likely require Docker. When Phase 6 begins, a `docs/concepts/what-is-docker.md` and a `docs/setup/docker.md` should be written before any surface that depends on it. Docker should be framed as infrastructure, not a learning goal in itself.
+LangFlow installs via pip and does not require Docker. If Flowise is introduced as a secondary option, it will require Node.js but not Docker. A `docs/concepts/what-is-docker.md` and `docs/setup/docker.md` should still be written before any surface that depends on Docker — but that is no longer a blocker for the first visual builder.
+
+### Installer note
+LangFlow has an installer at `scripts/install-langflow.sh` and a setup guide at `docs/setup/langflow.md`, created alongside Open WebUI and AnythingLLM. It is ready to activate when Phase 6 begins.
 
 ### Open decisions
-- Exact ordering of n8n vs Flowise as the first visual builder introduced
+- Whether Flowise is introduced alongside LangFlow or deferred further
 - Whether OpenClaw and OpenHands get separate guides or a shared "autonomous agents" guide
-- How to handle the Docker prerequisite cleanly without making it feel like a barrier
 
 ---
 

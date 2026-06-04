@@ -53,6 +53,27 @@ You don't have to install all five. If you only want the no-code path, steps 1�
 
 ---
 
+## Additional no-code tools
+
+Once you have Ollama running, these tools extend the no-code surface. Each has a standalone installer — you don't need to redo the full guided setup.
+
+| Guide | What it gives you |
+|-------|------------------|
+| [Open WebUI](open-webui.md) | A ChatGPT-style chat interface for your local Ollama model |
+| [AnythingLLM](anythingllm.md) | Upload documents and ask questions about them using local AI |
+
+---
+
+## Visual flow builder
+
+LangFlow is a more advanced surface for learners ready to design multi-step AI pipelines visually. It installs via pip and connects to Ollama — no Docker required.
+
+| Guide | What it gives you |
+|-------|------------------|
+| [LangFlow](langflow.md) | A visual canvas for designing AI pipelines and agent workflows |
+
+---
+
 ## Before you start
 
 - You'll need an internet connection for the initial downloads

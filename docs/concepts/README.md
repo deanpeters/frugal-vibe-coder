@@ -13,6 +13,8 @@ You don't need to read all of them before getting started. Read what you need, w
 | What is Ollama and what's actually running on my machine? | [What is Ollama?](what-is-ollama.md) |
 | What is an API key and how do I keep it safe? | [What is an API key?](what-is-an-api-key.md) |
 | What is `frugal-vibe.conf` and how do I use it? | [What is a config file?](what-is-a-config-file.md) |
+| How does AnythingLLM answer questions about my documents? | [What is RAG?](what-is-rag.md) |
+| What is LangFlow and what does a visual flow builder do? | [What is a visual flow builder?](what-is-a-flow-builder.md) |
 
 ---
 

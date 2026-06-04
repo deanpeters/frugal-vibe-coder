@@ -53,6 +53,27 @@ get_tool_version() {
                     ;;
             esac
             ;;
+        anythingllm)
+            # AnythingLLM is a desktop app — check by application path or command
+            local os
+            os=$(detect_os)
+            case "$os" in
+                macos)
+                    if [ -d "/Applications/AnythingLLM.app" ] || [ -d "$HOME/Applications/AnythingLLM.app" ]; then
+                        echo "installed"
+                    else
+                        echo ""
+                    fi
+                    ;;
+                debian)
+                    command -v anythingllm &>/dev/null && echo "installed" || \
+                    command -v anythinglm &>/dev/null && echo "installed" || echo ""
+                    ;;
+                *)
+                    echo ""
+                    ;;
+            esac
+            ;;
         *)
             # Generic fallback — just check if the command exists
             command -v "$tool" &>/dev/null && echo "installed" || echo ""
