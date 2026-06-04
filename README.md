@@ -295,9 +295,15 @@ The repo also supports or is actively considering these additional tools:
 - IDE: `VS Code`
 - visual flow builder: `LangFlow` — installer and setup guide available at `docs/setup/langflow.md`
 
-**Under consideration:**
+**Planned — next batch:**
+- no-code: `GPT4All` — most beginner-friendly local model runner, single desktop installer
+- IDE: `Zed` — native high-performance editor, good contrast to VS Code, built-in Ollama support
+- self-hosted search: `SearXNG` — private meta-search engine (Docker-appropriate)
+- AI search: `Vane` (formerly Perplexica) — AI answering engine using SearXNG + Ollama
+- prerequisites: Docker concept doc + setup guide (needed before SearXNG and Vane)
+
+**Under consideration (longer term):**
 - no-code: `bolt.diy`
-- CLI: `Goose`
 - IDE: `VSCodium`
 - future autonomous agents: `OpenClaw`, `OpenHands`
 - future coding agent framework: `mini-swe-agent`

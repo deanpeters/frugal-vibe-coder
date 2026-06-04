@@ -4,6 +4,33 @@ A forward-looking plan for frugal-vibe-coder. Phases are ordered by dependency �
 
 ---
 
+## Planned — Next Tool Additions
+
+The following tools have been evaluated and are queued for the next development batch.
+Each has confirmed open-source credentials, a defined install path, and a clear learning purpose.
+
+**Prerequisites (build these first — required before Docker-dependent tools):**
+- `docs/concepts/what-is-docker.md` — what Docker is, when it's the right tool vs. when to avoid it
+- `docs/setup/docker.md` — install Docker on macOS, Linux, and Windows
+
+**No-code surface:**
+- **GPT4All** — most beginner-friendly local model runner; single desktop installer, no Ollama required; macOS/Windows/Linux (77k stars)
+
+**IDE surface:**
+- **Zed** — native, high-performance code editor from the Atom/Tree-sitter team; direct Ollama support; strong pedagogic contrast to VS Code (native speed vs. ecosystem breadth); macOS/Linux primary (Windows support maturing) (84k stars)
+
+**Self-hosted services (Docker-appropriate):**
+- **SearXNG** — private self-hosted meta-search engine; Docker is the right path here (lightweight web server); useful standalone and as backend for Vane (31k stars, AGPL-3.0)
+- **Vane** (formerly Perplexica) — AI-powered answering engine with cited sources; uses SearXNG + Ollama; Node.js app, no Docker needed for Vane itself; add SearXNG first (35k stars, MIT)
+
+**Sequencing notes:**
+- GPT4All and Zed have no Docker dependency — can be added in any order
+- Docker concept + setup docs should come before SearXNG and Vane
+- Vane depends on SearXNG; document SearXNG first
+- Docker is used sparingly: only when it genuinely simplifies the install, not as a default
+
+---
+
 ## Current state (complete)
 
 - `/docs` — concepts, setup guides, surface guides, reference
