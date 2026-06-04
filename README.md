@@ -17,8 +17,8 @@
  ╚████╔╝ ██║██████╔╝███████╗    ╚██████╗╚██████╔╝██████╔╝███████╗██║  ██║    ║  
 ║ ╚═══╝  ╚═╝╚═════╝ ╚══════╝     ╚═════╝ ╚═════╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝    ║  
 ║                                                                            ║
-║   A learning platform for AI-assisted product building • Version 0.07.00   ║
-║   Dyad • Open WebUI • AnythingLLM • LangFlow • OpenCode • VS Code          ║
+║   A learning platform for AI-assisted product building • Version 0.10.00   ║
+║   Dyad • Goose • Aider • OpenCode • Open WebUI • LangFlow • VS Code        ║
 ║                                                                            ║
 ╚════════════════════════════════════════════════════════════════════════════╝
 ~~~
@@ -133,7 +133,7 @@ Problem → Choose a surface → Choose a model → Build → Learn → Iterate
 | Surface | Tools | Best for |
 |--------|-------|---------|
 | No-code | Dyad, Open WebUI, AnythingLLM | First success, low friction, visual thinkers |
-| CLI | OpenCode | Transparency, control, understanding what's happening |
+| CLI | OpenCode, Goose, Aider | Transparency, control, understanding what's happening |
 | IDE | VS Code | Code inspection, real iteration, long-term skills |
 
 These surfaces are independent. You can start with any one of them and move between them without losing your footing. Each connects back to the same foundational concepts.
@@ -142,6 +142,11 @@ These surfaces are independent. You can start with any one of them and move betw
 - **Dyad** — build apps from a description, no coding required
 - **Open WebUI** — a ChatGPT-style chat interface for your local Ollama model
 - **AnythingLLM** — upload documents and ask questions about them using local AI
+
+**CLI tools at a glance:**
+- **OpenCode** — guided AI-assisted building, step by step in the terminal
+- **Goose** — general-purpose AI agent for code, research, files, and automation
+- **Aider** — AI pair programming; edits existing code with reviewable diffs
 
 ---
 
@@ -224,7 +229,9 @@ If you want to deliberately retest the entire guided flow from Step 1, use `--fo
 ./scripts/install-dyad.sh         # Dyad — no-code app builder
 ./scripts/install-open-webui.sh   # Open WebUI — local chat interface
 ./scripts/install-anythingllm.sh  # AnythingLLM — document Q&A
-./scripts/install-opencode.sh     # OpenCode — CLI surface
+./scripts/install-opencode.sh     # OpenCode — CLI guided builds
+./scripts/install-goose.sh        # Goose — general-purpose AI agent
+./scripts/install-aider.sh        # Aider — AI pair programming
 ./scripts/install-vscode.sh       # VS Code + Continue — IDE surface
 ./scripts/install-langflow.sh     # LangFlow — visual AI pipeline builder
 ```
@@ -278,22 +285,22 @@ The current three surfaces (no-code, CLI, IDE) are the foundation. The full expa
 | 3 | Instructor resources — workshops, setup checklists, troubleshooting |
 | 4 | Paid model onboarding — when, how, and how to stay in control of costs |
 | 5 | Prompts and templates — PM-oriented, copy-paste ready |
-| 6 | Future surfaces — LangFlow (installer ready), Flowise, OpenClaw, OpenHands, SWE-agent |
+| 6 | Future surfaces — surface guides and projects for LangFlow, Flowise, OpenClaw, OpenHands, mini-swe-agent |
 
 The repo also supports or is actively considering these additional tools:
 
-**Active (installer + docs available):**
+**Active (installer + docs available now):**
 - no-code: `Dyad`, `Open WebUI`, `AnythingLLM`
-- CLI: `OpenCode`
+- CLI: `OpenCode`, `Goose`, `Aider`
 - IDE: `VS Code`
-- visual flow builder: `LangFlow` (installer ready, Phase 6 surface)
+- visual flow builder: `LangFlow` — installer and setup guide available at `docs/setup/langflow.md`
 
 **Under consideration:**
 - no-code: `bolt.diy`
 - CLI: `Goose`
 - IDE: `VSCodium`
 - future autonomous agents: `OpenClaw`, `OpenHands`
-- future coding agent framework: `SWE-agent`
+- future coding agent framework: `mini-swe-agent`
 
 Tools are introduced only when they can be done in a way that fits the learning platform principles of this repo: low-cost, local-first where practical, beginner-respectful, and realistic on ordinary hardware.
 

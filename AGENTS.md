@@ -48,6 +48,7 @@ Examples:
 Examples:
 - OpenCode
 - Goose
+- Aider
 - other terminal-first AI tooling that can run locally or with minimal paid usage
 
 ### 3. IDE-based learning and building workflows
@@ -317,8 +318,9 @@ Use for:
 - advanced low-cost workflows that remain transparent and portable
 
 Bias toward:
-- OpenCode
-- Goose
+- OpenCode for guided new-project workflows
+- Goose for general-purpose agentic tasks across varied work
+- Aider for iterating on existing code with precise, reviewable diffs
 - other tools that are realistic for learners and do not force high recurring cost
 
 CLI content must:
@@ -721,9 +723,9 @@ When introduced, these should come with clear framing about what autonomous mean
 ### Coding agent frameworks
 Frameworks designed to assist with or automate software engineering tasks at a higher level of abstraction.
 
-- **SWE-agent** — open-source framework for autonomous software engineering tasks
+- **mini-swe-agent** — minimal open-source coding agent (~100 lines of Python); pip-installable; scores >74% on SWE-bench; recommended over full SWE-agent for this audience
 
-These are appropriate for learners who have moved beyond the basics and want to understand how AI approaches larger-scale code problems. Not a starting point.
+These are appropriate for learners who have moved beyond the basics and want to understand how AI approaches larger-scale code problems autonomously. Not a starting point.
 
 ### General guidance for future surfaces
 When any of the above are brought into active scope:

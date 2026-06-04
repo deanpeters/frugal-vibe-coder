@@ -64,6 +64,17 @@ Once you have Ollama running, these tools extend the no-code surface. Each has a
 
 ---
 
+## Additional CLI tools
+
+Once you have Ollama running, these tools extend the CLI surface. Each has a standalone installer.
+
+| Guide | What it gives you |
+|-------|------------------|
+| [Goose](goose.md) | A general-purpose AI agent for code, research, files, and automation |
+| [Aider](aider.md) | AI pair programming — edits existing code with reviewable diffs |
+
+---
+
 ## Visual flow builder
 
 LangFlow is a more advanced surface for learners ready to design multi-step AI pipelines visually. It installs via pip and connects to Ollama — no Docker required.

@@ -15,6 +15,10 @@ A forward-looking plan for frugal-vibe-coder. Phases are ordered by dependency �
 - Open WebUI — chat interface for Ollama; `scripts/install-open-webui.sh`, `docs/setup/open-webui.md`
 - AnythingLLM — document Q&A and RAG; `scripts/install-anythingllm.sh`, `docs/setup/anythingllm.md`
 
+**CLI surface additions (added after initial release):**
+- Goose — general-purpose AI agent, desktop + CLI; `scripts/install-goose.sh`, `docs/setup/goose.md`
+- Aider — AI pair programming for existing code; `scripts/install-aider.sh`, `docs/setup/aider.md`
+
 **New concept docs:**
 - `docs/concepts/what-is-rag.md`
 - `docs/concepts/what-is-a-flow-builder.md`
@@ -144,9 +148,9 @@ Introduction of new learning surfaces as the learner's skills and confidence gro
 - Must include explicit framing on oversight — what the agent can do without asking
 
 **Coding agent frameworks** (advanced, optional)
-- SWE-agent
-- Designed for learners who have moved into real code work
-- Prerequisite: comfortable with the IDE surface
+- mini-swe-agent — minimal coding agent (~100 lines of Python), pip-installable, scores >74% on SWE-bench; replaces full SWE-agent as the recommended choice
+- Designed for learners who have moved into real code work and want to see what autonomous coding agents can do
+- Prerequisite: comfortable with the CLI or IDE surface
 
 ### Parameters for all future surfaces
 - Follow the Learner Interaction Pattern without exception
