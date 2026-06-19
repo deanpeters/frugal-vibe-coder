@@ -26,6 +26,7 @@ For learner-facing onboarding, prefer the repo's beginner-first path:
 ```bash
 ./scripts/install-ollama.sh      # Install Ollama and pull the default model
 ./scripts/install-dyad.sh        # Install Dyad (no-code surface)
+./scripts/install-bolt-diy.sh    # bolt.diy — browser-based AI app builder (no-code surface)
 ./scripts/install-opencode.sh    # Install OpenCode (CLI surface)
 ./scripts/install-vscode.sh      # Install VS Code + Continue extension (IDE surface)
 ```

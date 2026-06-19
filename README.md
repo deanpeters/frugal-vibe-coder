@@ -17,8 +17,8 @@
  ╚████╔╝ ██║██████╔╝███████╗    ╚██████╗╚██████╔╝██████╔╝███████╗██║  ██║    ║  
 ║ ╚═══╝  ╚═╝╚═════╝ ╚══════╝     ╚═════╝ ╚═════╝ ╚═════╝ ╚══════╝╚═╝  ╚═╝    ║  
 ║                                                                            ║
-║   A learning platform for AI-assisted product building • Version 0.10.00   ║
-║   Dyad • Goose • Aider • OpenCode • Open WebUI • LangFlow • VS Code        ║
+║   A learning platform for AI-assisted product building • Version 0.11.00   ║
+║   Dyad • bolt.diy • Goose • Aider • OpenCode • Open WebUI • VS Code        ║
 ║                                                                            ║
 ╚════════════════════════════════════════════════════════════════════════════╝
 ~~~
@@ -132,7 +132,7 @@ Problem → Choose a surface → Choose a model → Build → Learn → Iterate
 
 | Surface | Tools | Best for |
 |--------|-------|---------|
-| No-code | Dyad, Open WebUI, AnythingLLM | First success, low friction, visual thinkers |
+| No-code | Dyad, bolt.diy, Open WebUI, AnythingLLM | First success, low friction, visual thinkers |
 | CLI | OpenCode, Goose, Aider | Transparency, control, understanding what's happening |
 | IDE | VS Code | Code inspection, real iteration, long-term skills |
 
@@ -140,6 +140,7 @@ These surfaces are independent. You can start with any one of them and move betw
 
 **No-code tools at a glance:**
 - **Dyad** — build apps from a description, no coding required
+- **bolt.diy** — browser-based app builder; generates downloadable code with more control than Dyad
 - **Open WebUI** — a ChatGPT-style chat interface for your local Ollama model
 - **AnythingLLM** — upload documents and ask questions about them using local AI
 
@@ -227,6 +228,7 @@ If you want to deliberately retest the entire guided flow from Step 1, use `--fo
 ```bash
 ./scripts/install-ollama.sh       # Ollama + default model
 ./scripts/install-dyad.sh         # Dyad — no-code app builder
+./scripts/install-bolt-diy.sh     # bolt.diy — browser-based AI app builder
 ./scripts/install-open-webui.sh   # Open WebUI — local chat interface
 ./scripts/install-anythingllm.sh  # AnythingLLM — document Q&A
 ./scripts/install-opencode.sh     # OpenCode — CLI guided builds
@@ -290,7 +292,7 @@ The current three surfaces (no-code, CLI, IDE) are the foundation. The full expa
 The repo also supports or is actively considering these additional tools:
 
 **Active (installer + docs available now):**
-- no-code: `Dyad`, `Open WebUI`, `AnythingLLM`
+- no-code: `Dyad`, `bolt.diy`, `Open WebUI`, `AnythingLLM`
 - CLI: `OpenCode`, `Goose`, `Aider`
 - IDE: `VS Code`
 - visual flow builder: `LangFlow` — installer and setup guide available at `docs/setup/langflow.md`
@@ -303,7 +305,6 @@ The repo also supports or is actively considering these additional tools:
 - prerequisites: Docker concept doc + setup guide (needed before SearXNG and Vane)
 
 **Under consideration (longer term):**
-- no-code: `bolt.diy`
 - IDE: `VSCodium`
 - future autonomous agents: `OpenClaw`, `OpenHands`
 - future coding agent framework: `mini-swe-agent`
